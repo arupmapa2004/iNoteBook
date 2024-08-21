@@ -3,7 +3,7 @@ const mongoURl = 'mongodb+srv://arupmapa:inotesbook@cluster0.3ynng.mongodb.net/?
 function dbConnection() {
     mongoose.connect(mongoURl)
         .then(() => {
-            console.log('mongo connected');
+            console.log('DataBase Is Connected Successfully');
         })
         .catch((err) => {
             console.log('Failed to connect DB: ' + err);

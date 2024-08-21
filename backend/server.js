@@ -6,11 +6,12 @@ const PORT = 5000;
 
 dbConnection();
 
-app.use('/api', require('./routes/login'));
+app.use('/api/auth', require('./routes/login'));
+app.use('/api/notes', require('./routes/notes'));
 
 app.listen(PORT,()=>{
     try{
-        console.log("Server Started on port 5000..");
+        console.log("Server Is Running on localhost:5000/api/");
     }
     catch(err)
     {
