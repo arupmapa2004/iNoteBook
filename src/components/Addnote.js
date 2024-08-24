@@ -32,7 +32,7 @@ function Addnote() {
                     <input type="checkbox" className="form-check-input" id="exampleCheck1" required/>
                     <label className="form-check-label" htmlFor="exampleCheck1">I agree with this terms & condition.</label>
                 </div>
-                <button type="submit" className="btn btn-primary" onClick={onClick}>Submit</button>
+                <button type="submit" className="btn btn-primary" onClick={onClick}>Add Note</button>
             </form>
         </div>
     )
