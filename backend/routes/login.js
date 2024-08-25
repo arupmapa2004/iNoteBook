@@ -7,8 +7,6 @@ const jwt = require('jsonwebtoken');
 const fetchuser = require('../middleware/fetchuser');
 const JWT_SECRET = "@rupm@p@";
 
-router.use(express.json());
-
 router.get('/', (req, res) => {
     res.send("hello world");
 });

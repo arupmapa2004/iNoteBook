@@ -6,6 +6,7 @@ function NoteState(props) {
     const host = "http://localhost:5000";
     const note = []
     const [notes, setNotes] = useState(note);
+
     // get all notes
     const getnotes = async () => {
         const response = await fetch(`${host}/api/notes/getallnotes`, {
@@ -18,6 +19,7 @@ function NoteState(props) {
         const data = await response.json();
         setNotes(data);
     }
+
     //add notes
     const addnote = async (title, description, tag) => {
         const response = await fetch(`${host}/api/notes/addnotes`, {
@@ -67,9 +69,9 @@ function NoteState(props) {
         setNotes(newNote);
     }
     //delete note
-    const deletenote = async (_id) => {
-        const response = await fetch(`${host}/api/notes/addnotes`, {
-            method: "POST",
+    const deletenote = async (id) => {
+        const response = await fetch(`${host}/api/notes/deletenote/${id}`, {
+            method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
                 "auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjZjNGFjYmY4ZTgxYTkzODM5NWZjZmFlIn0sImlhdCI6MTcyNDI1MDcwMH0.62gl-RUAgmi2E0rdT5uohWU9HDZ56RPFOEgFTDbjIOE"
@@ -78,7 +80,7 @@ function NoteState(props) {
         const data = await response.json();
         console.log(data);
 
-        const newNote = note.filter((note) => { return note._id !== _id });
+        const newNote = notes.filter((note) => { return note._id !== id });
         setNotes(newNote);
     }
     return (
