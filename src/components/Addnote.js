@@ -12,6 +12,7 @@ function Addnote() {
     const onClick = (e)=>{
         e.preventDefault();
         addnote(note.title, note.description, note.tag);
+        setNote({...note, [e.target.name] : ''});
     }
     return (
         <div className="container">
@@ -28,11 +29,9 @@ function Addnote() {
                     <label htmlFor="tag" className="form-label">Tag</label>
                     <input type="text" className="form-control" id="notetag" name="tag" onChange={onChange} required/>
                 </div>
-                <div className="mb-3 form-check">
-                    <input type="checkbox" className="form-check-input" id="exampleCheck1" required/>
-                    <label className="form-check-label" htmlFor="exampleCheck1">I agree with this terms & condition.</label>
+                <div className="container my-3">
+                    <button type="submit" className="btn btn-primary" onClick={onClick}>Add Note</button>
                 </div>
-                <button type="submit" className="btn btn-primary" onClick={onClick}>Add Note</button>
             </form>
         </div>
     )
