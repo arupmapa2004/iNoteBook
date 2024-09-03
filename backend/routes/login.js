@@ -8,7 +8,7 @@ const fetchuser = require('../middleware/fetchuser');
 const JWT_SECRET = "@rupm@p@";
 
 router.get('/', (req, res) => {
-    res.send("hello world");
+    // res.redirect('/signin');
 });
 
 router.post('/signup',[
@@ -22,6 +22,7 @@ router.post('/signup',[
     }
 
     //console.log(req.body);
+    let success = false;
     try {
         let u = await User.findOne({ email: req.body.email });
         if (!u) {
@@ -41,7 +42,8 @@ router.post('/signup',[
 
             const authToken = jwt.sign(userToken, JWT_SECRET);
             //console.log(authToken);
-            return res.status(200).send("User added successfully");
+            success = true;
+            return res.status(200).send({success,authToken});
         } else {
             return res.status(400).send("Email already exists!");
         }
@@ -62,16 +64,19 @@ router.post('/signin',[
     }
 
     //console.log(req.body);
+    let success = false;
     const {email, password} = req.body;
     try {
         const user = await User.findOne({ email: email });
         if(!user)
         {
+            success = false;
             return res.status(400).send("Please Enter Valid Email!")
         }
        const passwordCheck = await bcrypt.compare(password,user.password);
        if(!passwordCheck)
        {
+         success = false;
          return res.status(400).send("Incorrect Password!");
        }
        const userToken = {
@@ -81,7 +86,8 @@ router.post('/signin',[
        }
        const authToken = jwt.sign(userToken,JWT_SECRET);
        console.log(authToken);
-       res.send({authToken});
+       success = true;
+       res.send({success,authToken});
     } catch (error) {
         console.log("Error on signin: " + error);
         return res.status(500).send("505 Internal Server Error");
