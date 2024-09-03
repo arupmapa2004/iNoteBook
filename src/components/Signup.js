@@ -30,6 +30,7 @@ function Signup() {
     }
     return (
         <div className="container">
+            <h1 className='my-2'>Please Signup | Access Your iNoteBook</h1>
             <form onSubmit={handleSubmit}>
                 <div className="mb-3">
                     <label htmlFor="name" className="form-label">Name</label>

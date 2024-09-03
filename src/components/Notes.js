@@ -2,28 +2,35 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import Noteitem from "./Noteitem";
 import noteContext from "../context/notes/noteContext";
 import Addnote from "./Addnote";
+import { useNavigate } from "react-router-dom";
 
 function Notes() {
     const context = useContext(noteContext);
     const { notes, getnotes, editnote } = context;
+    let navigate = useNavigate();
     useEffect(() => {
-        getnotes();
-    }, [getnotes]);
+        if (localStorage.getItem('token')) {
+            getnotes();
+        }
+        else {
+            navigate("/signin");
+        }
+    }, [getnotes, navigate]);
     const ref = useRef(null);
     const refClose = useRef(null);
-    const [note, setNote] = useState({etitle:"", edescription:"", etag:""});
+    const [note, setNote] = useState({ etitle: "", edescription: "", etag: "" });
 
-    const onChange = (e)=>{
-        setNote({...note, [e.target.name] : e.target.value});
+    const onChange = (e) => {
+        setNote({ ...note, [e.target.name]: e.target.value });
     }
-    const handleClick = (e)=>{
+    const handleClick = (e) => {
         e.preventDefault();
         editnote(note.id, note.etitle, note.edescription, note.etag);
         refClose.current.click();
     }
-    const updatenote = (currentnote)=>{
+    const updatenote = (currentnote) => {
         ref.current.click();
-        setNote({id:currentnote._id,etitle:currentnote.title, edescription:currentnote.description, etag:currentnote.tag});
+        setNote({ id: currentnote._id, etitle: currentnote.title, edescription: currentnote.description, etag: currentnote.tag });
     }
     return (
         <>
@@ -46,7 +53,7 @@ function Notes() {
                             <form>
                                 <div className="mb-3">
                                     <label htmlFor="title" className="form-label">Title</label>
-                                    <input type="text" className="form-control" id="enotetitle" name="etitle" aria-describedby="emailHelp" onChange={onChange} value={note.etitle}required />
+                                    <input type="text" className="form-control" id="enotetitle" name="etitle" aria-describedby="emailHelp" onChange={onChange} value={note.etitle} required />
                                 </div>
                                 <div className="mb-3">
                                     <label htmlFor="description" className="form-label">Description</label>
@@ -67,11 +74,13 @@ function Notes() {
             </div>
             <div className="row my-3">
                 <h2>Your Notes</h2>
-                {
+                {notes.length !== 0 ? (
                     notes.map((note) => {
-                        return <Noteitem key={note._id} updatenote={updatenote} note={note} />
+                        return <Noteitem key={note._id} updatenote={updatenote} note={note} />;
                     })
-                }
+                ) : (
+                    <p className="mx-3">No notes available!</p>
+                )}
             </div>
         </>
     )

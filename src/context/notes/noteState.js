@@ -13,7 +13,7 @@ function NoteState(props) {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
-                    "auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjZjNGFjYmY4ZTgxYTkzODM5NWZjZmFlIn0sImlhdCI6MTcyNDI1MDcwMH0.62gl-RUAgmi2E0rdT5uohWU9HDZ56RPFOEgFTDbjIOE"
+                    "auth-token": localStorage.getItem('token')
                 }
             });
 
@@ -35,7 +35,7 @@ function NoteState(props) {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjZjNGFjYmY4ZTgxYTkzODM5NWZjZmFlIn0sImlhdCI6MTcyNDI1MDcwMH0.62gl-RUAgmi2E0rdT5uohWU9HDZ56RPFOEgFTDbjIOE"
+                    "auth-token": localStorage.getItem('token')
                 },
                 body: JSON.stringify({ title, description, tag })
             });
@@ -47,7 +47,7 @@ function NoteState(props) {
             setNotes(notes.concat(data));
         }
         catch (err) {
-            console.error("Error on adding note "+ err);
+            console.error("Error on adding note " + err);
         }
     }
     //edit note
@@ -57,7 +57,7 @@ function NoteState(props) {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
-                    "auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjZjNGFjYmY4ZTgxYTkzODM5NWZjZmFlIn0sImlhdCI6MTcyNDI1MDcwMH0.62gl-RUAgmi2E0rdT5uohWU9HDZ56RPFOEgFTDbjIOE"
+                    "auth-token": localStorage.getItem('token')
                 },
                 body: JSON.stringify({ title, description, tag })
             });
@@ -66,10 +66,10 @@ function NoteState(props) {
                 throw new Error("Failed to update data");
             }
             setNotes((prevNotes) =>
-            prevNotes.map((note) =>
-                note._id === _id ? { ...note, title, description, tag } : note
-            )
-        );
+                prevNotes.map((note) =>
+                    note._id === _id ? { ...note, title, description, tag } : note
+                )
+            );
         }
         catch (err) {
             console.error("Error on editing notes" + err);
@@ -82,14 +82,14 @@ function NoteState(props) {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
-                    "auth-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjZjNGFjYmY4ZTgxYTkzODM5NWZjZmFlIn0sImlhdCI6MTcyNDI1MDcwMH0.62gl-RUAgmi2E0rdT5uohWU9HDZ56RPFOEgFTDbjIOE"
+                    "auth-token": localStorage.getItem('token')
                 }
             });
-            
+
             if (!response.ok) {
                 throw new Error(`Failed to delete note: ${response.status} ${response.statusText}`);
             }
-            
+
             const newNote = notes.filter((note) => { return note._id !== id });
             setNotes(newNote);
         }
