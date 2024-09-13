@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
-const mongoURl = 'mongodb+srv://arupmapa:inotesbook@cluster0.3ynng.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'
+require("dotenv").config()
+const mongoURl = process.env.MONGO
 function dbConnection() {
     mongoose.connect(mongoURl)
         .then(() => {

@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const JWT_SECRET =  "@rupm@p@";
-
+require("dotenv").config()
 const fetchuser = (req,res,next)=>{
     const token = req.header('auth-token');
     if(!token)
@@ -8,7 +8,7 @@ const fetchuser = (req,res,next)=>{
         return res.status(400).send("Invalid Token");
     }
     try {
-        const data = jwt.verify(token,JWT_SECRET);
+        const data = jwt.verify(token,process.env.SECRET);
         req.user = data.user;
         next();
 

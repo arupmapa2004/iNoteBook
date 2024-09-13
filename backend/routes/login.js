@@ -6,7 +6,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const fetchuser = require('../middleware/fetchuser');
 const JWT_SECRET = "@rupm@p@";
-
+require("dotenv").config()
 router.get('/', (req, res) => {
     // res.redirect('/signin');
 });
@@ -40,7 +40,7 @@ router.post('/signup',[
                 }
             };
 
-            const authToken = jwt.sign(userToken, JWT_SECRET);
+            const authToken = jwt.sign(userToken, process.env.SECRET);
             //console.log(authToken);
             success = true;
             return res.status(200).send({success,authToken});
@@ -84,7 +84,7 @@ router.post('/signin',[
             id : user.id
          }
        }
-       const authToken = jwt.sign(userToken,JWT_SECRET);
+       const authToken = jwt.sign(userToken,process.env.SECRET);
        console.log(authToken);
        success = true;
        res.send({success,authToken});
