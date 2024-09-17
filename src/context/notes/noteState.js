@@ -21,7 +21,14 @@ function NoteState(props) {
                 throw new Error("Failed to add data");
             }
             const data = await response.json();
-            setNotes(data.notes);
+            if(data.success)
+            {
+              setNotes(data.notes);
+              //props.toast.success(data.message);
+            }
+            else{
+              props.toast.error(data.message);
+            }
         }
         catch (err) {
             console.error("Error on fetching all notes " + err);
@@ -73,11 +80,7 @@ function NoteState(props) {
                 throw new Error("Failed to update data");
             }
             if (data.success) {
-                setNotes((prevNotes) =>
-                    prevNotes.map((note) =>
-                        note._id === _id ? { ...note, title, description, tag } : note
-                    )
-                );
+                setNotes([...notes, data.notes]); 
                 props.toast.success(data.message);
             }
             else {
@@ -107,7 +110,7 @@ function NoteState(props) {
             const data = await response.json();
             if (data.success)
             {
-              const newNote = data.notes.filter((note) => { return note._id !== id });
+              const newNote = notes.filter((note) => { return note._id !== id });
               setNotes(newNote);
               props.toast.success(data.message);
             }
