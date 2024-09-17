@@ -22,6 +22,10 @@ function NoteState(props) {
             }
             const data = await response.json();
             setNotes(data);
+            if (data.success)
+                props.toast.success(data.message);
+            else
+                props.toast.error(data.message);
         }
         catch (err) {
             console.error("Error on fetching all notes " + err);
@@ -45,6 +49,10 @@ function NoteState(props) {
             }
             const data = await response.json();
             setNotes(notes.concat(data));
+            if (data.success)
+                props.toast.success(data.message);
+            else
+                props.toast.error(data.message);
         }
         catch (err) {
             console.error("Error on adding note " + err);
@@ -62,6 +70,7 @@ function NoteState(props) {
                 body: JSON.stringify({ title, description, tag })
             });
 
+            const data = await response.json();
             if (!response.ok) {
                 throw new Error("Failed to update data");
             }
@@ -70,6 +79,11 @@ function NoteState(props) {
                     note._id === _id ? { ...note, title, description, tag } : note
                 )
             );
+            if (data.success)
+                props.toast.success(data.message);
+            else
+                props.toast.error(data.message);
+
         }
         catch (err) {
             console.error("Error on editing notes" + err);
@@ -90,8 +104,13 @@ function NoteState(props) {
                 throw new Error(`Failed to delete note: ${response.status} ${response.statusText}`);
             }
 
+            const data = await response.json();
             const newNote = notes.filter((note) => { return note._id !== id });
             setNotes(newNote);
+            if (data.success)
+                props.toast.success(data.message);
+            else
+                props.toast.error(data.message);
         }
         catch (err) {
             console.error("Error on deleting notes" + err);

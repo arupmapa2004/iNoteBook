@@ -16,7 +16,6 @@ function Signin(props) {
             body: JSON.stringify({email: credentials.email, password: credentials.password})
         })
         const data = await response.json();
-        console.log(data);
         if(data.success)
         {
              localStorage.setItem('token' , data.authToken);

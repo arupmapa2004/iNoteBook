@@ -11,7 +11,7 @@ import 'react-toastify/dist/ReactToastify.css';
 function App() {
   return (
     <>
-    <NoteState>
+    <NoteState toast={toast}>
       <BrowserRouter>
         <Navbar />
         <ToastContainer/>
