@@ -21,7 +21,7 @@ function NoteState(props) {
                 throw new Error("Failed to add data");
             }
             const data = await response.json();
-            setNotes(data);
+            setNotes(data.notes);
             if (data.success)
                 props.toast.success(data.message);
             else
