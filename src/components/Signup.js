@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 
-function Signup() {
+function Signup(props) {
 
     const [credentials, setCredentials] = useState({ name: "", email: "", password: "", cpassword: "" });
     let navigate = useNavigate();
@@ -19,10 +19,11 @@ function Signup() {
         //console.log(data);
         if (data.success) {
             localStorage.setItem('token', data.authToken);
+            props.toast.success(data.message);
             navigate("/signin");
         }
         else {
-            alert("please enter valid data");
+            props.toast.error(data.message);
         }
     }
     const onChange = (e) => {
@@ -30,7 +31,7 @@ function Signup() {
     }
     return (
         <div className="container">
-            <h1 className='my-2'>Please Signup | Access Your iNoteBook</h1>
+            <h1 className='my-2'>Please Signup | Become a member of iNoteBook</h1>
             <form onSubmit={handleSubmit}>
                 <div className="mb-3">
                     <label htmlFor="name" className="form-label">Name</label>
@@ -44,10 +45,6 @@ function Signup() {
                 <div className="mb-3">
                     <label htmlFor="password" className="form-label">Password</label>
                     <input type="password" className="form-control" id="password" name='password' onChange={onChange} />
-                </div>
-                <div className="mb-3">
-                    <label htmlFor="cpassword" className="form-label">Confirm Password</label>
-                    <input type="password" className="form-control" id="cpassword" name='cpassword' onChange={onChange} />
                 </div>
                 <button type="submit" className="btn btn-primary">Submit</button>
             </form>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 
-function Signin() {
+function Signin(props) {
    
     const [credentials,setCredentials] = useState({email:"", password:""});
     let navigate = useNavigate();
@@ -16,11 +16,15 @@ function Signin() {
             body: JSON.stringify({email: credentials.email, password: credentials.password})
         })
         const data = await response.json();
-        //console.log(data);
+        console.log(data);
         if(data.success)
         {
              localStorage.setItem('token' , data.authToken);
+             props.toast.success(data.message);
              navigate("/");
+        }
+        else{
+            props.toast.error(data.message);
         }
     }
     const onChange = (e)=>{
