@@ -22,10 +22,6 @@ function NoteState(props) {
             }
             const data = await response.json();
             setNotes(data.notes);
-            if (data.success)
-                props.toast.success(data.message);
-            else
-                props.toast.error(data.message);
         }
         catch (err) {
             console.error("Error on fetching all notes " + err);
@@ -48,11 +44,13 @@ function NoteState(props) {
                 throw new Error("Failed to add data");
             }
             const data = await response.json();
-            setNotes(notes.concat(data));
-            if (data.success)
+            if (data.success) {
+                setNotes(notes.concat(data.notes));
                 props.toast.success(data.message);
-            else
+            }
+            else {
                 props.toast.error(data.message);
+            }
         }
         catch (err) {
             console.error("Error on adding note " + err);
@@ -74,15 +72,17 @@ function NoteState(props) {
             if (!response.ok) {
                 throw new Error("Failed to update data");
             }
-            setNotes((prevNotes) =>
-                prevNotes.map((note) =>
-                    note._id === _id ? { ...note, title, description, tag } : note
-                )
-            );
-            if (data.success)
+            if (data.success) {
+                setNotes((prevNotes) =>
+                    prevNotes.map((note) =>
+                        note._id === _id ? { ...note, title, description, tag } : note
+                    )
+                );
                 props.toast.success(data.message);
-            else
+            }
+            else {
                 props.toast.error(data.message);
+            }
 
         }
         catch (err) {
@@ -103,14 +103,18 @@ function NoteState(props) {
             if (!response.ok) {
                 throw new Error(`Failed to delete note: ${response.status} ${response.statusText}`);
             }
-
+            
             const data = await response.json();
-            const newNote = notes.filter((note) => { return note._id !== id });
-            setNotes(newNote);
             if (data.success)
-                props.toast.success(data.message);
+            {
+              const newNote = data.notes.filter((note) => { return note._id !== id });
+              setNotes(newNote);
+              props.toast.success(data.message);
+            }
             else
-                props.toast.error(data.message);
+            {
+              props.toast.error(data.message);
+            }
         }
         catch (err) {
             console.error("Error on deleting notes" + err);
