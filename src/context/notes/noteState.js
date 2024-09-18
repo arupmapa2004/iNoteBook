@@ -4,8 +4,7 @@ import NoteContext from './noteContext';
 function NoteState(props) {
     const host = "http://localhost:3000";
      //const host = "https://inotebook-lmva.onrender.com";
-    let note = []
-    const [notes, setNotes] = useState(note);
+    const [notes, setNotes] = useState([]);
 
     // get all notes
     const getnotes = async () => {
