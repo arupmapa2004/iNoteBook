@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import NoteContext from './noteContext';
 
 function NoteState(props) {
-    //const host = "http://localhost:3000";
-     const host = "https://inotebook-lmva.onrender.com";
+    const host = "http://localhost:3000";
+     //const host = "https://inotebook-lmva.onrender.com";
     let note = []
     const [notes, setNotes] = useState(note);
 
@@ -53,7 +53,10 @@ function NoteState(props) {
             }
             const data = await response.json();
             if (data.success) {
-                setNotes(notes.concat(data.notes));
+                const updatedNotes = notes.map((note) =>
+                    note._id === _id ? data.notes : note
+                );
+                setNotes(updatedNotes);
                 props.toast.success(data.message);
             }
             else {
