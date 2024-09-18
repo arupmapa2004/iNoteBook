@@ -6,10 +6,11 @@ import { useNavigate } from "react-router-dom";
 
 function Notes() {
     const context = useContext(noteContext);
-    const { notes, getnotes, editnote } = context;
+    const { notes, getuser, getnotes, editnote } = context;
     let navigate = useNavigate();
     useEffect(() => {
         if (localStorage.getItem('token')) {
+            getuser();
             getnotes();
         }
         else {

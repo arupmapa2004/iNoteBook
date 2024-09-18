@@ -1,7 +1,10 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import noteContext from "../context/notes/noteContext";
 
 function Navbar() {
+    const context = useContext(noteContext);
+    const {user} = context;
     let navigate = useNavigate();
     const handleLogout = () => {
         localStorage.removeItem('token');
@@ -29,7 +32,8 @@ function Navbar() {
                             <Link className="btn btn-success mx-1" to="/signup" role="button">Signup</Link>
                         </form> :
                         <form className="d-flex">
-                            <button type="button" className="btn btn-warning" onClick={handleLogout}>SignOut</button>
+                             <h5 className="mx-1">Welcome, {user}</h5>
+                            <button type="button" className="btn btn-warning mx-1" onClick={handleLogout}>SignOut</button>
                         </form>
                     }
                 </div>

@@ -2,10 +2,32 @@ import React, { useState } from 'react';
 import NoteContext from './noteContext';
 
 function NoteState(props) {
-    const host = "http://localhost:3000";
-     //const host = "https://inotebook-lmva.onrender.com";
+    //const host = "http://localhost:5000";
+    const host = "https://inotebook-lmva.onrender.com";
+    const [user, setUser] = useState('');
     const [notes, setNotes] = useState([]);
-
+    // get user
+    const getuser = async () => {
+        try {
+            const response = await fetch(`${host}/api/auth/getuser`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "auth-token": localStorage.getItem('token')
+                }
+            });
+            const data = await response.json();
+            if (data.success) {
+                setUser(data.user.name);
+            }
+            else {
+                setUser("Unknown");
+            }
+        }
+        catch (err) {
+            console.error("Error on fetching user: " + err);
+        }
+    }
     // get all notes
     const getnotes = async () => {
         try {
@@ -21,13 +43,12 @@ function NoteState(props) {
                 throw new Error("Failed to add data");
             }
             const data = await response.json();
-            if(data.success)
-            {
-              setNotes(data.notes);
-              props.toast.success(data.message);
+            if (data.success) {
+                setNotes(data.notes);
+                props.toast.success(data.message);
             }
-            else{
-              props.toast.error(data.message);
+            else {
+                props.toast.error(data.message);
             }
         }
         catch (err) {
@@ -52,10 +73,7 @@ function NoteState(props) {
             }
             const data = await response.json();
             if (data.success) {
-                const updatedNotes = notes.map((note) =>
-                    note._id === _id ? data.notes : note
-                );
-                setNotes(updatedNotes);
+                setNotes(notes.concat(data.notes));
                 props.toast.success(data.message);
             }
             else {
@@ -83,7 +101,10 @@ function NoteState(props) {
                 throw new Error("Failed to update data");
             }
             if (data.success) {
-                setNotes([...notes, data.notes]); 
+                const updatedNotes = notes.map((note) =>
+                    note._id === _id ? data.notes : note
+                );
+                setNotes(updatedNotes);
                 props.toast.success(data.message);
             }
             else {
@@ -109,17 +130,15 @@ function NoteState(props) {
             if (!response.ok) {
                 throw new Error(`Failed to delete note: ${response.status} ${response.statusText}`);
             }
-            
+
             const data = await response.json();
-            if (data.success)
-            {
-              const newNote = notes.filter((note) => { return note._id !== id });
-              setNotes(newNote);
-              props.toast.success(data.message);
+            if (data.success) {
+                const newNote = notes.filter((note) => { return note._id !== id });
+                setNotes(newNote);
+                props.toast.success(data.message);
             }
-            else
-            {
-              props.toast.error(data.message);
+            else {
+                props.toast.error(data.message);
             }
         }
         catch (err) {
@@ -127,7 +146,7 @@ function NoteState(props) {
         }
     }
     return (
-        <NoteContext.Provider value={{ notes, getnotes, addnote, editnote, deletenote }}>
+        <NoteContext.Provider value={{ user, notes, getuser, getnotes, addnote, editnote, deletenote }}>
             {props.children}
         </NoteContext.Provider>
     )
