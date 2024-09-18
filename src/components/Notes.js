@@ -15,7 +15,7 @@ function Notes() {
         else {
             navigate("/signin");
         }
-    }, [getnotes, navigate]);
+    }, []);
     const ref = useRef(null);
     const refClose = useRef(null);
     const [note, setNote] = useState({ etitle: "", edescription: "", etag: "" });

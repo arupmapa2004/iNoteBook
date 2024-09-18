@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
-require("dotenv").config()
-const mongoURl = process.env.MONGO
+const mongoURl = process.env.MONGO;
+
 function dbConnection() {
     mongoose.connect(mongoURl)
         .then(() => {
