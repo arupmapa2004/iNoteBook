@@ -76,7 +76,7 @@ router.put('/updatenote/:id', fetchuser, async (req, res) => {
         return res.status(200).json({
             message:"Notes updated successfully!",
             success: true,
-            notes: notes
+            notes: note
         });
     } catch (error) {
         console.log("Error on updating notes: " + error);
@@ -107,7 +107,7 @@ router.delete('/deletenote/:id', fetchuser, async (req, res) => {
         return res.status(200).json({
             message:"Notes updated successfully!",
             success: true,
-            notes: notes
+            notes: note
         });
     } catch (error) {
         console.log("Error on updating notes: " + error);
