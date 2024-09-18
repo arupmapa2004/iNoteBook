@@ -105,14 +105,13 @@ router.delete('/deletenote/:id', fetchuser, async (req, res) => {
         }
         await Note.findByIdAndDelete(req.params.id);
         return res.status(200).json({
-            message:"Notes updated successfully!",
-            success: true,
-            notes: note
+            message:"Notes deleted successfully!",
+            success: true
         });
     } catch (error) {
-        console.log("Error on updating notes: " + error);
+        console.log("Error on deleting notes: " + error);
         return res.status(500).json({
-            message:"Can't update at this time!",
+            message:"Can't delete at this time!",
             success: false
         });
     }
