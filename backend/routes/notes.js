@@ -38,7 +38,7 @@ router.post('/addnotes', fetchuser, [
         return res.status(200).json({
             message:"Notes Added Successfully",
             success: true,
-            notes: notes
+            notes: note
     });
     } catch (error) {
         console.log("Error on Adding Notes: " + error);
