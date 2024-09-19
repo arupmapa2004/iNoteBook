@@ -3,6 +3,8 @@ import  Home  from "./components/Home";
 import  About  from "./components/About";
 import Signin from "./components/Signin";
 import Signup from "./components/Signup"
+import Userprofile from "./components/Userprofile";
+import Changepassword from "./components/Changepassword";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import NoteState from "./context/notes/noteState";
 import { ToastContainer, toast } from 'react-toastify';
@@ -21,6 +23,8 @@ function App() {
           <Route exact path="/about" element={<About toast={toast}/>} />
           <Route exact path="/signin" element={<Signin toast={toast}/>} />
           <Route exact path="/signup" element={<Signup toast={toast}/>} />
+          <Route exact path="/userprofile" element={<Userprofile toast={toast}/>} />
+          <Route exact path="/changepassword" element={<Changepassword toast={toast}/>} />
         </Routes>
         </div>
       </BrowserRouter>

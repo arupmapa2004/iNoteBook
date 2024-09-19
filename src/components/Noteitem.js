@@ -16,8 +16,21 @@ function Noteitem(props) {
                     <p className="card-text">{note.description}</p>
                     <p className="card-text">{note.tag}</p>
                     <div className="d-flex align-item-center">
-                        <FontAwesomeIcon icon={faTrash} className="custom-icon" size="lg" onClick={async () => { await deletenote(note._id) }} />
-                        <FontAwesomeIcon icon={faPenToSquare} className="custom-icon" size="lg" onClick={async () => { await updatenote(note)}}/>
+                        <FontAwesomeIcon icon={faPenToSquare}
+                            className="custom-icon"
+                            data-bs-toggle="tooltip" data-bs-placement="top"
+                            data-bs-custom-class="custom-tooltip"
+                            data-bs-title="Edit notes"
+                            size="lg"
+                            onClick={async () => { await updatenote(note) }} />
+                        <FontAwesomeIcon icon={faTrash}
+                            className="custom-icon"
+                            data-bs-toggle="tooltip"
+                            data-bs-placement="top"
+                            data-bs-custom-class="custom-tooltip"
+                            data-bs-title="Delete notes"
+                            size="lg"
+                            onClick={async () => { await deletenote(note._id) }} />
                     </div>
                 </div>
             </div>

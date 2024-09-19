@@ -4,7 +4,7 @@ import noteContext from "../context/notes/noteContext";
 
 function Navbar() {
     const context = useContext(noteContext);
-    const {user} = context;
+    const { user } = context;
     let navigate = useNavigate();
     const handleLogout = () => {
         localStorage.removeItem('token');
@@ -32,7 +32,16 @@ function Navbar() {
                             <Link className="btn btn-success mx-1" to="/signup" role="button">Signup</Link>
                         </form> :
                         <form className="d-flex">
-                             <h5 className="mx-1">Welcome, {user}</h5>
+                            <h5 className="mx-1">Welcome, {user.name}</h5>
+                            <div className="dropdown mx-2">
+                                <button className="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Settings
+                                </button>
+                                <ul className="dropdown-menu">
+                                    <li><Link className="dropdown-item" to="/userprofile">Profile</Link></li>
+                                    <li><Link className="dropdown-item" to="/changepassword">Change Password</Link></li>
+                                </ul>
+                            </div>
                             <button type="button" className="btn btn-warning mx-1" onClick={handleLogout}>SignOut</button>
                         </form>
                     }

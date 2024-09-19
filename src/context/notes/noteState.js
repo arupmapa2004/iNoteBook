@@ -18,7 +18,7 @@ function NoteState(props) {
             });
             const data = await response.json();
             if (data.success) {
-                setUser(data.user.name);
+                setUser(data.user);
             }
             else {
                 setUser("Unknown");

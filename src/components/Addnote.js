@@ -9,28 +9,33 @@ function Addnote() {
     const onChange = (e) => {
         setNote({ ...note, [e.target.name]: e.target.value });
     }
-    const onClick = (e) => {
+    const onAddClick = (e) => {
         e.preventDefault();
         addnote(note.title, note.description, note.tag);
+        setNote({ title: "", description: "", tag: "" });
+    }
+    const onResetClick = (e) => {
+        e.preventDefault();
         setNote({ title: "", description: "", tag: "" });
     }
     return (
         <div className="container">
             <form className="row g-3 needs-validation" novalidate>
                 <div className="mb-3">
-                    <label htmlFor="title" className="form-label">Title</label>
-                    <input type="text" className="form-control" id="notetitle" name="title" aria-describedby="emailHelp" value={note.title} onChange={onChange} required />
+                    <label htmlFor="title" className="form-label"><strong>Title</strong></label>
+                    <input type="text" className="form-control" placeholder="Enter your notes title" id="notetitle" name="title" aria-describedby="emailHelp" value={note.title} onChange={onChange} style={{width:"700px"}} required />
                 </div>
                 <div className="mb-3">
-                    <label htmlFor="description" className="form-label">Description</label>
-                    <input type="text" className="form-control" id="notedescription" name="description" value={note.description} onChange={onChange} required />
+                    <label htmlFor="description" className="form-label"><strong>Description</strong></label>
+                    <input type="text" className="form-control" placeholder="Enter your notes description" id="notedescription" name="description" value={note.description} onChange={onChange} style={{height:"100px",width:"700px"}} required />
                 </div>
                 <div className="mb-3">
-                    <label htmlFor="tag" className="form-label">Tag</label>
-                    <input type="text" className="form-control" id="notetag" name="tag" value={note.tag} onChange={onChange} required />
+                    <label htmlFor="tag" className="form-label"><strong>Tag</strong></label>
+                    <input type="text" className="form-control" placeholder="Enter your notes tag" id="notetag" name="tag" value={note.tag} onChange={onChange} style={{width:"700px"}} required />
                 </div>
-                <div className="container my-3">
-                    <button type="submit" className="btn btn-primary" onClick={onClick}>Add Note</button>
+                <div className="container mb-3">
+                    <button type="submit" className="btn btn-primary mx-2" onClick={onAddClick}>Add Note</button>
+                    <button type="submit" className="btn btn-primary mx-2" onClick={onResetClick}>Reset Note</button>
                 </div>
             </form>
         </div>
