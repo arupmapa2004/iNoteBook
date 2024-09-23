@@ -21,7 +21,14 @@ function Signin(props) {
         {
              localStorage.setItem('token' , data.authToken);
              props.toast.success(data.message);
-             navigate("/");
+             if(data.userAuth)
+             {
+                navigate("/");
+             }
+             else{
+                localStorage.removeItem('token');
+                navigate("/signin");
+             }
         }
         else{
             props.toast.error(data.message);

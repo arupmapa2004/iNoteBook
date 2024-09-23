@@ -1,14 +1,18 @@
+require("dotenv").config()
 const express = require('express');
 const User = require('../models/User');
 const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const session = require("express-session");
 const fetchuser = require('../middleware/fetchuser');
-require("dotenv").config()
-router.get('/', (req, res) => {
 
-});
+router.use(session({
+    saveUninitialized: true,
+    secret: 'abcd#xyz',
+    resave: false
+}))
 router.get('/getuser', fetchuser, async (req, res) => {
     try {
         const userId = req.user.id;
@@ -123,10 +127,13 @@ router.post('/signin', [
         }
         const authToken = jwt.sign(userToken, process.env.SECRET);
         success = true;
+        session.userAuth = true;
+
         res.status(200).json({
             message: "Successfully Logged in!",
             success: success,
             authToken: authToken,
+            userAuth: session.userAuth
         });
     } catch (error) {
         console.log("Error on signin: " + error);
