@@ -7,7 +7,7 @@ const jwt = require('jsonwebtoken');
 const fetchuser = require('../middleware/fetchuser');
 require("dotenv").config()
 router.get('/', (req, res) => {
-    // res.redirect('/signin');
+
 });
 router.get('/getuser', fetchuser, async (req, res) => {
     try {
@@ -22,7 +22,7 @@ router.get('/getuser', fetchuser, async (req, res) => {
         }
 
         return res.status(200).json({
-            message: "User fetched successfully",
+            message: "User founded",
             success: true,
             user: user
         });
@@ -137,17 +137,41 @@ router.post('/signin', [
     }
 });
 
-router.post('/getuser', fetchuser, async (req, res) => {
+router.put('/changepassword', fetchuser, async (req, res) => {
     try {
-        userId = req.user.id;
-        const user = await User.findById(userId).select("-password");
+        const userId = req.user.id;
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(400).json({
+                message: "User not found!",
+                success: false
+            })
+        }
+        const { oldpassword, newpassword, cnfpassword } = req.body;
+        const passwordCheck = await bcrypt.compare(oldpassword, user.password);
+
+        if (!passwordCheck) {
+            return res.status(402).json({
+                message: "Current password not match!",
+                success: false
+            })
+        }
+        if (newpassword !== cnfpassword) {
+            return res.status(401).json({
+                message: "Confrim password not match!",
+                success: false
+            })
+        }
+        const salt = await bcrypt.genSalt(10);
+        const newpass = await bcrypt.hash(newpassword, salt);
+        await User.findByIdAndUpdate(user._id, { password: newpass }, { new: true });
         return res.status(200).json({
-            message: `Hi... ${user.name} \n Your Email: ${user.email} \n Registration Date: ${user.date}`,
+            message: "Password Changed Successfully",
             success: true
-        });
+        })
 
     } catch (error) {
-        console.log("Can't Find User: " + error);
+        console.log("Can't change password: " + error);
         return res.status(500).json({
             message: "Internal Server Error",
             success: false

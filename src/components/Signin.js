@@ -5,8 +5,8 @@ function Signin(props) {
    
     const [credentials,setCredentials] = useState({email:"", password:""});
     let navigate = useNavigate();
-    //const host = "http://localhost:5000";
-    const host = "https://inotebook-lmva.onrender.com";
+    const host = "http://localhost:5000";
+    //const host = "https://inotebook-lmva.onrender.com";
     const handleSubmit = async (e)=>{
         e.preventDefault();
         const response = await fetch(`${host}/api/auth/signin`,{

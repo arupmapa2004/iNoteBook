@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import NoteContext from './noteContext';
 
 function NoteState(props) {
-    //const host = "http://localhost:5000";
-    const host = "https://inotebook-lmva.onrender.com";
+    const host = "http://localhost:5000";
+    //const host = "https://inotebook-lmva.onrender.com";
     const [user, setUser] = useState('');
     const [notes, setNotes] = useState([]);
     // get user
@@ -26,6 +26,25 @@ function NoteState(props) {
         }
         catch (err) {
             console.error("Error on fetching user: " + err);
+        }
+    }
+    const changepassword = async (oldpassword,newpassword,cnfpassword)=>{
+        const response = await fetch(`${host}/api/auth/changepassword`,{
+              method:"PUT",
+              headers:{
+                "Content-Type":"application/json",
+                "auth-token":localStorage.getItem('token')
+              },
+              body: JSON.stringify({oldpassword:oldpassword,newpassword:newpassword,cnfpassword:cnfpassword})
+        })
+
+        const data = await response.json();
+        if(data.success)
+        {
+            props.toast.success(data.message);
+        }
+        else{
+            props.toast.error(data.message);
         }
     }
     // get all notes
@@ -146,7 +165,7 @@ function NoteState(props) {
         }
     }
     return (
-        <NoteContext.Provider value={{ user, notes, getuser, getnotes, addnote, editnote, deletenote }}>
+        <NoteContext.Provider value={{ user, notes, getuser, changepassword, getnotes, addnote, editnote, deletenote }}>
             {props.children}
         </NoteContext.Provider>
     )
