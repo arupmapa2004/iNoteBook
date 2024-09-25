@@ -5,14 +5,8 @@ const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const session = require("express-session");
 const fetchuser = require('../middleware/fetchuser');
 
-router.use(session({
-    saveUninitialized: true,
-    secret: 'abcd#xyz',
-    resave: false
-}))
 router.get('/getuser', fetchuser, async (req, res) => {
     try {
         const userId = req.user.id;
@@ -43,13 +37,14 @@ router.post('/signup', [
     body('name').isLength({ min: 3 }),
     body('email').isEmail(),
     body('password').isLength({ min: 6 }),
+    body('contactno').isLength({ min: 0, max: 10 })
 ], async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }
 
-    //console.log(req.body);
+    console.log(req.body);
     let success = false;
     try {
         let u = await User.findOne({ email: req.body.email });
@@ -59,7 +54,12 @@ router.post('/signup', [
             const user = await User.create({
                 name: req.body.name,
                 email: req.body.email,
-                password: secretPassword
+                password: secretPassword,
+                contactno: req.body.contactno,
+                dob: req.body.dob,
+                gender: req.body.gender,
+                city: req.body.city,
+                state: req.body.state
             });
 
             const userToken = {
@@ -127,13 +127,12 @@ router.post('/signin', [
         }
         const authToken = jwt.sign(userToken, process.env.SECRET);
         success = true;
-        session.userAuth = true;
+        req.session.user = userToken.user;
 
         res.status(200).json({
             message: "Successfully Logged in!",
             success: success,
-            authToken: authToken,
-            userAuth: session.userAuth
+            authToken: authToken
         });
     } catch (error) {
         console.log("Error on signin: " + error);

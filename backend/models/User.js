@@ -1,3 +1,4 @@
+const { type } = require('@testing-library/user-event/dist/type');
 const mongoose = require('mongoose');
 const {Schema} = require('mongoose');
 
@@ -12,6 +13,26 @@ const UserSchema = new Schema({
         unique: true
     },
     password:{
+        type: String,
+        required: true
+    },
+    contactno:{
+      type: String,
+      required: true
+    },
+    dob:{
+        type: Date,
+        required: true
+    },
+    gender:{
+       type: String,
+       required: true
+    },
+    city:{
+        type: String,
+        required: true
+    },
+    state:{
         type: String,
         required: true
     },

@@ -4,6 +4,7 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const dbConnection = require('./db');
+const checkSession = require('./middleware/session');
 const PORT = process.env.PORT;
 
 app.use(cors());
