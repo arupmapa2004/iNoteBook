@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
-import noteContext from "../context/notes/noteContext";
+import userContext from "../context/user/userContext";
 
 function Userprofile() {
-    const context = useContext(noteContext);
+    const context = useContext(userContext);
     const { user } = context;
     const [formatedDate, setFormatedDate] = useState("DD/MM/YYYY");
     const formateDate = (d) => {

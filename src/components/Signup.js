@@ -29,24 +29,28 @@ function Signup(props) {
         setCredentials({ ...credentials, [e.target.name]: e.target.value });
     }
     return (
-        <div className="container">
-            <h1 className='my-2'>Please Signup | Become a member of iNoteBook</h1>
-            <form onSubmit={handleSubmit}>
-                <div className="mb-3">
-                    <label htmlFor="name" className="form-label">Name</label>
-                    <input type="text" className="form-control" id="name" name="name" aria-describedby="emailHelp" onChange={onChange} style={{width:"700px"}}/>
-                </div>
-                <div className="mb-3">
-                    <label htmlFor="email" className="form-label">Email address</label>
-                    <input type="email" className="form-control" id="email" name="email" aria-describedby="emailHelp" onChange={onChange} style={{width:"700px"}}/>
-                    <div id="emailHelp" className="form-text">We'll never share your email with anyone else.</div>
-                </div>
-                <div className="mb-3">
-                    <label htmlFor="password" className="form-label">Password</label>
-                    <input type="password" className="form-control" id="password" name='password' onChange={onChange} style={{width:"700px"}}/>
-                </div>
-                <button type="submit" className="btn btn-primary">Submit</button>
-            </form>
+        <div className="container d-flex justify-content-center">
+            <div className='mx-auto'>
+                <h1 className='my-2'>Please Signup | Become a member of iNoteBook</h1>
+                <form onSubmit={handleSubmit}>
+                    <div className="mb-3">
+                        <label htmlFor="name" className="form-label">Name</label>
+                        <input type="text" className="form-control" id="name" name="name" aria-describedby="emailHelp" onChange={onChange} style={{ width: "700px" }} />
+                    </div>
+                    <div className="mb-3">
+                        <label htmlFor="email" className="form-label">Email address</label>
+                        <input type="email" className="form-control" id="email" name="email" aria-describedby="emailHelp" onChange={onChange} style={{ width: "700px" }} />
+                        <div id="emailHelp" className="form-text">We'll never share your email with anyone else.</div>
+                    </div>
+                    <div className="mb-3">
+                        <label htmlFor="password" className="form-label">Password</label>
+                        <input type="password" className="form-control" id="password" name='password' onChange={onChange} style={{ width: "700px" }} />
+                    </div>
+                    <div className='container'>
+                    <button type="submit" className="btn btn-primary d-flex mx-auto">Signup</button>
+                    </div>
+                </form>
+            </div>
         </div>
     )
 }

@@ -9,10 +9,12 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import NoteState from "./context/notes/noteState";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import UserState from "./context/user/userState";
 
 function App() {
   return (
     <>
+    <UserState toast={toast}>
     <NoteState toast={toast}>
       <BrowserRouter>
         <Navbar />
@@ -29,6 +31,7 @@ function App() {
         </div>
       </BrowserRouter>
       </NoteState>
+      </UserState>
     </>
   );
 }

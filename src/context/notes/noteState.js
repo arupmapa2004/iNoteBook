@@ -4,50 +4,9 @@ import NoteContext from './noteContext';
 function NoteState(props) {
     const host = "http://localhost:5000";
     //const host = "https://inotebook-lmva.onrender.com";
-    const [user, setUser] = useState('');
     const [notes, setNotes] = useState([]);
-    // get user
-    const getuser = async () => {
-        try {
-            const response = await fetch(`${host}/api/auth/getuser`, {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                    "auth-token": localStorage.getItem('token')
-                }
-            });
-            const data = await response.json();
-            if (data.success) {
-                setUser(data.user);
-            }
-            else {
-                setUser("Unknown");
-            }
-        }
-        catch (err) {
-            console.error("Error on fetching user: " + err);
-        }
-    }
-    const changepassword = async (oldpassword,newpassword,cnfpassword)=>{
-        const response = await fetch(`${host}/api/auth/changepassword`,{
-              method:"PUT",
-              headers:{
-                "Content-Type":"application/json",
-                "auth-token":localStorage.getItem('token')
-              },
-              body: JSON.stringify({oldpassword:oldpassword,newpassword:newpassword,cnfpassword:cnfpassword})
-        })
-
-        const data = await response.json();
-        if(data.success)
-        {
-            props.toast.success(data.message);
-        }
-        else{
-            props.toast.error(data.message);
-        }
-    }
-    // get all notes
+    
+        // get all notes
     const getnotes = async () => {
         try {
             const response = await fetch(`${host}/api/notes/getallnotes`, {
@@ -165,7 +124,7 @@ function NoteState(props) {
         }
     }
     return (
-        <NoteContext.Provider value={{ user, notes, getuser, changepassword, getnotes, addnote, editnote, deletenote }}>
+        <NoteContext.Provider value={{ notes, getnotes, addnote, editnote, deletenote }}>
             {props.children}
         </NoteContext.Provider>
     )

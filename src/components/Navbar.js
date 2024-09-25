@@ -1,9 +1,9 @@
 import React, { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import noteContext from "../context/notes/noteContext";
+import userContext from "../context/user/userContext";
 
 function Navbar() {
-    const context = useContext(noteContext);
+    const context = useContext(userContext);
     const { user } = context;
     let navigate = useNavigate();
     const handleLogout = () => {
