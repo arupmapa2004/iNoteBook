@@ -34,60 +34,70 @@ router.get('/getuser', fetchuser, async (req, res) => {
     }
 })
 router.post('/signup', [
-    body('name').isLength({ min: 3 }),
-    body('email').isEmail(),
-    body('password').isLength({ min: 6 }),
-    body('contactno').isLength({ min: 0, max: 10 })
+    body('name', 'Name should be at least 3 characters').isLength({ min: 3 }),
+    body('email', 'Enter a valid email').isEmail(),
+    body('password', 'Password must be at least 6 characters').isLength({ min: 6 }),
+    body('contactno', 'Contact number must be 10 digits').isLength({ min: 10, max: 10 }).isNumeric(),
+    body('dob', 'Date of Birth is required').notEmpty(),
+    body('gender', 'Gender is required').notEmpty(),
+    body('city', 'City is required').notEmpty(),
+    body('state', 'State is required').notEmpty(),
 ], async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
+        console.log(errors.array())
+        return res.status(400).json({ 
+            message: errors.array()[0].msg,
+         });
     }
 
-    console.log(req.body);
     let success = false;
     try {
-        let u = await User.findOne({ email: req.body.email });
-        if (!u) {
-            const salt = await bcrypt.genSalt(10);
-            const secretPassword = await bcrypt.hash(req.body.password, salt);
-            const user = await User.create({
-                name: req.body.name,
-                email: req.body.email,
-                password: secretPassword,
-                contactno: req.body.contactno,
-                dob: req.body.dob,
-                gender: req.body.gender,
-                city: req.body.city,
-                state: req.body.state
-            });
-
-            const userToken = {
-                user: {
-                    id: user.id,
-                    name: user.name
-                }
-            };
-
-            const authToken = jwt.sign(userToken, process.env.SECRET);
-            //console.log(authToken);
-            success = true;
-            return res.status(200).send({
-                message: "Registration successfully completed!",
-                success: success,
-                authToken: authToken
-            });
-        } else {
+        // Check if user already exists
+        let user = await User.findOne({ email: req.body.email });
+        if (user) {
             return res.status(400).send({
                 message: "Email already exists!",
-                success: success
+                success
             });
         }
+
+        // Encrypt the password
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(req.body.password, salt);
+
+        // Create a new user
+        user = await User.create({
+            name: req.body.name,
+            email: req.body.email,
+            password: hashedPassword,
+            contactno: req.body.contactno,
+            dob: req.body.dob,
+            gender: req.body.gender,
+            city: req.body.city,
+            state: req.body.state
+        });
+
+        // Create a JWT token for the user
+        const data = {
+            user: {
+                id: user.id,
+                name: user.name
+            }
+        };
+        const authToken = jwt.sign(data, process.env.SECRET);
+
+        success = true;
+        res.status(200).json({
+            message: "Registration successfully completed!",
+            success,
+            authToken
+        });
     } catch (error) {
-        console.log("Error on signup: " + error);
+        console.error("Error on signup: ", error);
         return res.status(500).send({
-            message: "505 Internal Server Error",
-            success: success
+            message: "Internal Server Error",
+            success
         });
     }
 });
@@ -99,7 +109,10 @@ router.post('/signin', [
 ], async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
+        console.log(errors.array())
+        return res.status(400).json({ 
+            message: errors.array()[0].msg
+        });
     }
 
     const { email, password } = req.body;
@@ -127,7 +140,7 @@ router.post('/signin', [
         }
         const authToken = jwt.sign(userToken, process.env.SECRET);
         success = true;
-        req.session.user = userToken.user;
+        //req.session.user = userToken.user;
 
         res.status(200).json({
             message: "Successfully Logged in!",

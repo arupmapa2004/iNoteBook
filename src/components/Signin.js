@@ -20,11 +20,10 @@ function Signin(props) {
         if (data.success) {
             localStorage.setItem('token', data.authToken);
             props.toast.success(data.message);
-            if (data.userAuth) {
+            if (data.authToken) {
                 navigate("/");
             }
             else {
-                localStorage.removeItem('token');
                 navigate("/signin");
             }
         }
