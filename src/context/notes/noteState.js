@@ -17,10 +17,8 @@ function NoteState(props) {
                 }
             });
 
-            if (!response.ok) {
-                throw new Error("Failed to add data");
-            }
             const data = await response.json();
+            
             if (data.success) {
                 setNotes(data.notes);
                 props.toast.success(data.message);
@@ -46,10 +44,8 @@ function NoteState(props) {
                 body: JSON.stringify({ title, description, tag })
             });
 
-            if (!response.ok) {
-                throw new Error("Failed to add data");
-            }
             const data = await response.json();
+
             if (data.success) {
                 setNotes(notes.concat(data.notes));
                 props.toast.success(data.message);
@@ -75,9 +71,7 @@ function NoteState(props) {
             });
 
             const data = await response.json();
-            if (!response.ok) {
-                throw new Error("Failed to update data");
-            }
+
             if (data.success) {
                 const updatedNotes = notes.map((note) =>
                     note._id === _id ? data.notes : note

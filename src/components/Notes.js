@@ -9,7 +9,7 @@ function Notes() {
     const context1 = useContext(noteContext);
     const context2 = useContext(userContext);
     const { notes, getnotes, editnote } = context1;
-    const {getuser} = context2;
+    const { getuser } = context2;
     let navigate = useNavigate();
     useEffect(() => {
         if (localStorage.getItem('token')) {

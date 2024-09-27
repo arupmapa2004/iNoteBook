@@ -1,14 +1,11 @@
 require('dotenv').config();
-
-const express = require('express');
-const router = express.Router();
 const session = require('express-session');
 
-router.use(session({
+const sessionData = session({
     saveUninitialized: true,
     secret: process.env.SESSIONSECRET,
     resave: false
-}))
+})
 
 const checkSession = (req,res,next)=>{
     try {
@@ -18,7 +15,7 @@ const checkSession = (req,res,next)=>{
         }
         else
         {
-           redirect("/signin");
+           return res.redirect("/signin");
         }
         
     } catch (error) {
@@ -31,3 +28,4 @@ const checkSession = (req,res,next)=>{
 }
 
 module.exports = checkSession;
+module.exports = sessionData;

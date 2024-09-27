@@ -24,14 +24,15 @@ router.get('/getallnotes', fetchuser, async (req, res) => {
 
 //ROUTE 2 : for adding user notes -- (/api/addnotes)
 router.post('/addnotes', fetchuser, [
-    body('title', 'Please Enter a Valid Title').isLength({ min: 5 }),
-    body('description', 'Please Give Description Atleast 5 Character').isLength({ min: 7 })
+    body('title', 'Please Give Title Atleast 5 Character').isLength({ min: 5 }),
+    body('description', 'Please Give Description Atleast 7 Character').isLength({ min: 7 }),
+    body('title', 'Please Give Tag Atleast 3 Character').isLength({ min: 3 })
 ], async (req, res) => {
     try {
         const { title, description, tag } = req.body;
         const error = validationResult(req);
         if (!error.isEmpty()) {
-            return res.status(400).json({ error: error.array() });
+            return res.status(400).json({ message: error.array()[0].msg });
         }
         const note = new Note({ title, description, tag, user: req.user.id });
         await note.save();
@@ -51,9 +52,17 @@ router.post('/addnotes', fetchuser, [
 
 
 //ROUTE 3 : for updating user notes -- (/api/updatenote/:id)
-router.put('/updatenote/:id', fetchuser, async (req, res) => {
+router.put('/updatenote/:id', fetchuser,[
+    body('title', 'Please Give Title Atleast 5 Character').isLength({ min: 5 }),
+    body('description', 'Please Give Description Atleast 7 Character').isLength({ min: 7 }),
+    body('title', 'Please Give Title Atleast 3 Character').isLength({ min: 3 })
+], async (req, res) => {
     try {
         const { title, description, tag } = req.body;
+        const error = validationResult(req);
+        if (!error.isEmpty()) {
+            return res.status(400).json({ message: error.array()[0].msg });
+        }
         const newNote = {};
         if (title) { newNote.title = title };
         if (description) { newNote.description = description };
