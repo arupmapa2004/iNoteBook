@@ -48,9 +48,26 @@ function UserState(props)
             props.toast.error(data.message);
         }
     }
+    const forgetpassword = async (email)=>{
+        const response = await fetch(`${host}/api/auth/forgetpassword`,{
+            method:"PUT",
+            headers:{
+              "Content-Type":"application/json"
+            },
+            body: JSON.stringify({email:email})
+      })
 
+      const data = await response.json();
+      if(data.success)
+      {
+          props.toast.success(data.message);
+      }
+      else{
+          props.toast.error(data.message);
+      }
+    }
    return(
-    <UserContext.Provider value={{user, getuser, changepassword}}>
+    <UserContext.Provider value={{user, getuser, changepassword, forgetpassword}}>
         {props.children}
     </UserContext.Provider>
    )

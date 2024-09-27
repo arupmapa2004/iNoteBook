@@ -5,6 +5,8 @@ const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const nodemailer = require('nodemailer');
+const randomstring = require('randomstring');
 const fetchuser = require('../middleware/fetchuser');
 router.get('/getuser', fetchuser, async (req, res) => {
     try {
@@ -27,7 +29,7 @@ router.get('/getuser', fetchuser, async (req, res) => {
     catch (err) {
         console.error("Error on fetching user: " + err);
         return res.status(500).json({
-            message: "Error fetching user",
+            message: "500 Internal Server Error",
             success: false
         });
     }
@@ -45,10 +47,10 @@ router.post('/signup', [
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         console.log(errors.array())
-        return res.status(400).json({ 
+        return res.status(400).json({
             message: errors.array()[0].msg,
             success: false
-         });
+        });
     }
 
     try {
@@ -91,7 +93,7 @@ router.post('/signup', [
     } catch (error) {
         console.error("Error on signup: ", error);
         return res.status(500).send({
-            message: "Internal Server Error",
+            message: "500 Internal Server Error",
             success: false
         });
     }
@@ -100,12 +102,12 @@ router.post('/signup', [
 
 router.post('/signin', [
     body('email').isEmail(),
-    body('password','Please Enter Your Password').exists(),
+    body('password', 'Please Enter Your Password').exists(),
 ], async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         console.log(errors.array())
-        return res.status(400).json({ 
+        return res.status(400).json({
             message: errors.array()[0].msg
         });
     }
@@ -133,7 +135,7 @@ router.post('/signin', [
             }
         }
         const authToken = jwt.sign(userToken, process.env.SECRET);
-        success = true; 
+        success = true;
 
         req.session.user = userToken.user;
 
@@ -186,6 +188,72 @@ router.put('/changepassword', fetchuser, async (req, res) => {
 
     } catch (error) {
         console.log("Can't change password: " + error);
+        return res.status(500).json({
+            message: "Internal Server Error",
+            success: false
+        });
+    }
+})
+// Configuring nodemailer with your SMTP settings
+const transporter = nodemailer.createTransport({
+    service: 'gmail', // false for TLS - as a boolean not string
+    host: 'smtp@gmail.com',
+    port: 587,
+    auth: {
+        user: 'mapaarup@gmail.com', // Your email address
+        pass: 'pely hrod txpk jwee'
+    }
+});
+
+// Generate OTP function
+function generatePassword() {
+    return randomstring.generate({
+        length: 7
+    });
+}
+router.put('/forgetpassword', async (req, res) => {
+    try {
+        const email = req.body.email;
+        const user = await User.findOne({ email: email });
+        if (!user) {
+            return res.json({
+                message: "User Not found",
+                success: false
+            })
+        }
+        const newpass = generatePassword();
+        
+        // Compose email
+        const mailOptions = {
+            from: 'mapaarup@gmail.com',
+            to: email,
+            subject: 'Password Reset',
+            html: `<p>Your password has been reset and new password is: <strong>${newpass}</strong></p></br></br><b style="color: red;">This is an auto generate email, please do not reply and do not forword</b>`
+        };
+
+        const salt = await bcrypt.genSalt(10);
+        const newpassword = await bcrypt.hash(newpass, salt);
+        const isUpdate = await User.findByIdAndUpdate(user._id, { password: newpassword }, { new: true });
+
+        if (isUpdate) {
+            transporter.sendMail(mailOptions, (error, info) => {
+                if (error) {
+                    console.log('Error sending email:', error);
+                    return res.status(500).json({
+                        message: 'Failed to send OTP. Please try again later.',
+                        success: false
+                    });
+                } else {
+                    return res.status(200).json({
+                        message: 'New password sent to email successfully. Please check your inbox.',
+                        success: true
+                    });
+                }
+            });
+        }
+    }
+    catch (err) {
+        console.log("Can't handle forget password: " + err);
         return res.status(500).json({
             message: "Internal Server Error",
             success: false

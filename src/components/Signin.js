@@ -1,10 +1,13 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
+import userContext from '../context/user/userContext';
 
 function Signin(props) {
 
     const [credentials, setCredentials] = useState({ email: "", password: "" });
     let navigate = useNavigate();
+    const context = useContext(userContext);
+    const { forgetpassword } = context;
     const host = "http://localhost:5000";
     //const host = "https://inotebook-lmva.onrender.com";
     const handleSubmit = async (e) => {
@@ -31,6 +34,10 @@ function Signin(props) {
             props.toast.error(data.message);
         }
     }
+    const handleForgetPassword = (e)=>{
+         e.preventDefault();
+         forgetpassword(credentials.email);
+    }
     const onChange = (e) => {
         setCredentials({ ...credentials, [e.target.name]: e.target.value });
     }
@@ -50,7 +57,7 @@ function Signin(props) {
                     </div>
                     <div className='container'>
                         <button type="submit" className="btn btn-primary">Login</button>
-                        <button type="button" className="btn btn-link" style={{ color: "red" }}>forget password?</button>
+                        <button type="button" className="btn btn-link" style={{ color: "red" }} onClick={handleForgetPassword}>forget password?</button>
                     </div>
                 </form>
             </div>
