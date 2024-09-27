@@ -140,7 +140,7 @@ router.post('/signin', [
         }
         const authToken = jwt.sign(userToken, process.env.SECRET);
         success = true;
-        //req.session.user = userToken.user;
+        req.session.user = userToken.user;
 
         res.status(200).json({
             message: "Successfully Logged in!",

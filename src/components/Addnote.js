@@ -27,7 +27,7 @@ function Addnote() {
                 </div>
                 <div className="mb-3">
                     <label htmlFor="description" className="form-label"><strong>Description</strong></label>
-                    <input type="text" className="form-control" placeholder="Enter your notes description" id="notedescription" name="description" value={note.description} onChange={onChange} style={{height:"100px",width:"700px"}} required />
+                    <textarea type="text" className="form-control" placeholder="Enter your notes description" id="notedescription" name="description" value={note.description} onChange={onChange} style={{height:"100px",width:"700px"}} required ></textarea>
                 </div>
                 <div className="mb-3">
                     <label htmlFor="tag" className="form-label"><strong>Tag</strong></label>

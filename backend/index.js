@@ -5,6 +5,7 @@ const app = express();
 const cors = require('cors');
 const dbConnection = require('./db');
 const checkSession = require('./middleware/session');
+
 const PORT = process.env.PORT;
 
 app.use(cors());
@@ -12,7 +13,7 @@ app.use(express.json());
 dbConnection();
 
 app.use('/api/auth', require('./routes/login'));
-app.use('/api/notes', require('./routes/notes'));
+app.use('/api/notes',checkSession,require('./routes/notes'));
 
 app.listen(PORT, async() => {
     try {
