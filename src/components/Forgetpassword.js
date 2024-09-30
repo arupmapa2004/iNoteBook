@@ -3,38 +3,44 @@ import userContext from "../context/user/userContext";
 import { useLocation } from "react-router-dom";
 
 function Forgetpassword(props) {
-    const [email, setEmail] = useState({ email: ""});
+    const [email, setEmail] = useState({ email: "" });
+    const [response, setResponse] = useState('');
     const context = useContext(userContext);
     const location = useLocation();
-    const { forgetpassword } = context;
-    
+    const { passwordMsg, forgetpassword } = context;
+
     useEffect(() => {
+        setResponse("");
         if (location.state && location.state.userEmail) {
             setEmail({ email: location.state.userEmail });
         }
     }, [location.state]);
 
-    const handleForgetPassword = (e)=>{
+    const handleForgetPassword = async(e) => {
         e.preventDefault();
-        forgetpassword(email.email);
-   }
+        await forgetpassword(email.email);
+        if(passwordMsg)
+        {
+            setResponse(passwordMsg);
+        }
+    }
     const onChange = (e) => {
         setEmail({ ...email, [e.target.name]: e.target.value });
     }
     return (
         <>
-           <div className="container">
-            <h1>Reset Your Password</h1>
-            <strong>To reset your password, enter your email below and submit.</strong>
-            <br/>
-            <strong> An email will be sent to you with instructions about how to complete the process.</strong>
+            <div className="container">
+                <h1>Reset Your Password</h1>
+                <strong>To reset your password, enter your email below and submit.</strong>
+                <br />
+                <strong> An email will be sent to you with instructions about how to complete the process.</strong>
             </div>
             <div className="container my-4">
                 <form onSubmit={handleForgetPassword}>
                     <div className="mb-3">
                         <label htmlFor="email" className="form-label"><strong>Email address</strong></label>
-                        <input type="email" className="form-control" name="email" id="email" aria-describedby="emailHelp" style={{ width: "600px" }} value={email.email} onChange={onChange}/>
-                        <div id="emailMessage" className="form-text"></div>
+                        <input type="email" className="form-control" name="email" id="email" aria-describedby="emailHelp" style={{ width: "600px" }} value={email.email} onChange={onChange} />
+                        <div id="emailMessage" className="form-text" style={{ color: 'red' }}>{response}</div>
                     </div>
                     <button type="submit" className="btn btn-primary">Reset Password</button>
                 </form>

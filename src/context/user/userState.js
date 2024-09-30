@@ -4,7 +4,8 @@ import UserContext from "./userContext";
 function UserState(props)
 {
     const [user, setUser] = useState('');
-
+    const [passwordMsg, setPasswordMsg] = useState('');
+    
     const host = "http://localhost:5000";
     //const host = "https://inotebook-lmva.onrender.com";
 
@@ -79,10 +80,10 @@ function UserState(props)
       const data = await response.json();
       if(data.success)
       {
-          props.toast.success(data.message);
+          setPasswordMsg(data.message)
       }
       else{
-          props.toast.error(data.message);
+          setPasswordMsg(data.message);
       }
     }
     const imageupload = async (imageurl) =>{
@@ -110,7 +111,7 @@ function UserState(props)
         }
     }
    return(
-    <UserContext.Provider value={{user, signin, getuser, changepassword, forgetpassword, imageupload}}>
+    <UserContext.Provider value={{user,passwordMsg, signin, getuser, changepassword, forgetpassword, imageupload}}>
         {props.children}
     </UserContext.Provider>
    )
