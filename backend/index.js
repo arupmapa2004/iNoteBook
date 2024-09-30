@@ -3,6 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const app = express();
 const cors = require('cors');
+const path = require('path');
 const dbConnection = require('./db');
 const checkSession = require('./middleware/session');
 const sessionData = require("./middleware/session")
@@ -12,6 +13,7 @@ app.use(cors());
 app.use(express.json());
 dbConnection();
 
+app.use('/public', express.static(path.join(__dirname, 'public')));
 app.use('/api/auth',sessionData, require('./routes/login'));
 app.use('/api/notes',checkSession,require('./routes/notes'));
 

@@ -4,9 +4,28 @@ import UserContext from "./userContext";
 function UserState(props)
 {
     const [user, setUser] = useState('');
+
     const host = "http://localhost:5000";
     //const host = "https://inotebook-lmva.onrender.com";
 
+    // login method
+    const signin = async (email, password) =>{
+        const response = await fetch(`${host}/api/auth/signin`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ email: email, password: password })
+        })
+        const data = await response.json();
+        if (data.success) {
+            localStorage.setItem('token', data.authToken);
+            props.toast.success(data.message);
+        }
+        else {
+            props.toast.error(data.message);
+        }
+    }
     // get user
     const getuser = async () => {
         try {
@@ -66,8 +85,32 @@ function UserState(props)
           props.toast.error(data.message);
       }
     }
+    const imageupload = async (imageurl) =>{
+        try {
+            const formData = new FormData();
+        formData.append('image', imageurl);
+            const response = await fetch(`${host}/api/auth/imageupload`, {
+                method: "PUT",
+                headers: {
+                    "auth-token": localStorage.getItem('token')
+                },
+                body: formData
+            });
+            const data = await response.json();
+            console.log(data);
+            if (data.success) {
+                props.toast.success(data.message)
+            }
+            else {
+                props.toast.error(data.message)
+            }
+        }
+        catch (err) {
+            console.error("Error on uploading image: " + err);
+        }
+    }
    return(
-    <UserContext.Provider value={{user, getuser, changepassword, forgetpassword}}>
+    <UserContext.Provider value={{user, signin, getuser, changepassword, forgetpassword, imageupload}}>
         {props.children}
     </UserContext.Provider>
    )

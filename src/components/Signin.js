@@ -7,31 +7,19 @@ function Signin(props) {
     const [credentials, setCredentials] = useState({ email: "", password: "" });
     let navigate = useNavigate();
     const context = useContext(userContext);
-    const { forgetpassword } = context;
-    const host = "http://localhost:5000";
+    const { signin, forgetpassword } = context;
+    //const host = "http://localhost:5000";
     //const host = "https://inotebook-lmva.onrender.com";
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const response = await fetch(`${host}/api/auth/signin`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ email: credentials.email, password: credentials.password })
-        })
-        const data = await response.json();
-        if (data.success) {
-            localStorage.setItem('token', data.authToken);
-            props.toast.success(data.message);
-            if (data.authToken) {
-                navigate("/");
-            }
-            else {
-                navigate("/signin");
-            }
+        await signin(credentials.email, credentials.password);
+        const token = localStorage.getItem('token');
+        if(token)
+        {
+            navigate("/");
         }
-        else {
-            props.toast.error(data.message);
+        else{
+            navigate("/signin");
         }
     }
     const handleForgetPassword = (e)=>{

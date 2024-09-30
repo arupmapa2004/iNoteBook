@@ -7,7 +7,11 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 const randomstring = require('randomstring');
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
 const fetchuser = require('../middleware/fetchuser');
+
 router.get('/getuser', fetchuser, async (req, res) => {
     try {
         const userId = req.user.id;
@@ -34,6 +38,7 @@ router.get('/getuser', fetchuser, async (req, res) => {
         });
     }
 })
+
 router.post('/signup', [
     body('name', 'Name should be at least 3 characters').isLength({ min: 3 }),
     body('email', 'Enter a valid email').isEmail(),
@@ -98,7 +103,6 @@ router.post('/signup', [
         });
     }
 });
-
 
 router.post('/signin', [
     body('email').isEmail(),
@@ -194,6 +198,7 @@ router.put('/changepassword', fetchuser, async (req, res) => {
         });
     }
 })
+
 // Configuring nodemailer with your SMTP settings
 const transporter = nodemailer.createTransport({
     service: 'gmail', // false for TLS - as a boolean not string
@@ -211,6 +216,7 @@ function generatePassword() {
         length: 7
     });
 }
+
 router.put('/forgetpassword', async (req, res) => {
     try {
         const email = req.body.email;
@@ -222,7 +228,7 @@ router.put('/forgetpassword', async (req, res) => {
             })
         }
         const newpass = generatePassword();
-        
+
         // Compose email
         const mailOptions = {
             from: 'mapaarup@gmail.com',
@@ -260,4 +266,55 @@ router.put('/forgetpassword', async (req, res) => {
         });
     }
 })
+
+const storage = multer.diskStorage({
+    destination: "./public/images",
+    filename: (req, file, cb) => {
+        cb(null, "image_" + Date.now() + path.extname(file.originalname));
+    }
+})
+const upload = multer({
+    storage: storage,
+    fileFilter: (req, file, cb) => {
+        const extName = path.extname(file.originalname);
+        if (extName.toLowerCase() === ".jpg" || extName.toLowerCase() === ".jpeg" || extName.toLowerCase() === ".png") {
+            cb(null, true);
+        }
+        else {
+            cb(new Error("Only .jpg or .jpeg format allowed!"));
+        }
+    }
+})
+router.put('/imageupload', fetchuser, upload.single('image'), async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(400).json({
+                message: "User not found!",
+                success: false
+            })
+        }
+        const imageurl = req.file ? req.file.filename : null;
+        if (!imageurl) {
+            return res.status(400).json({
+                message: "Only jpeg or jpg file allowed!",
+                success: false
+            });
+        }
+        await User.findByIdAndUpdate(user._id, { image: imageurl }, { new: true });
+        return res.status(200).json({
+            message: "Image Uploaded Successfully",
+            success: true
+        })
+
+    } catch (error) {
+        console.log("Can't upload image: " + error);
+        return res.status(500).json({
+            message: "505 Internal Server Error",
+            success: false
+        });
+    }
+})
+
 module.exports = router;
