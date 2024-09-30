@@ -7,7 +7,7 @@ function Signin(props) {
     const [credentials, setCredentials] = useState({ email: "", password: "" });
     let navigate = useNavigate();
     const context = useContext(userContext);
-    const { signin, forgetpassword } = context;
+    const { signin } = context;
     //const host = "http://localhost:5000";
     //const host = "https://inotebook-lmva.onrender.com";
     const handleSubmit = async (e) => {
@@ -24,7 +24,7 @@ function Signin(props) {
     }
     const handleForgetPassword = (e)=>{
          e.preventDefault();
-         forgetpassword(credentials.email);
+         navigate('/forgetpassword',{ state: { userEmail: credentials.email } });
     }
     const onChange = (e) => {
         setCredentials({ ...credentials, [e.target.name]: e.target.value });
@@ -45,7 +45,7 @@ function Signin(props) {
                     </div>
                     <div className='container'>
                         <button type="submit" className="btn btn-primary">Login</button>
-                        <button type="button" className="btn btn-link" style={{ color: "red" }} onClick={handleForgetPassword}>forget password?</button>
+                        <button type="button" className="btn btn-link" style={{ color: "red" }} onClick={handleForgetPassword} userEmail={credentials.email}>forget password?</button>
                     </div>
                 </form>
             </div>

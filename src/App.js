@@ -10,6 +10,7 @@ import NoteState from "./context/notes/noteState";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import UserState from "./context/user/userState";
+import Forgetpassword from "./components/Forgetpassword";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           <Route exact path="/" element={<Home toast={toast}/>} />
           <Route exact path="/about" element={<About toast={toast}/>} />
           <Route exact path="/signin" element={<Signin toast={toast}/>} />
+          <Route exact path="/forgetpassword" element={<Forgetpassword />} />
           <Route exact path="/signup" element={<Signup toast={toast}/>} />
           <Route exact path="/userprofile" element={<Userprofile toast={toast}/>} />
           <Route exact path="/changepassword" element={<Changepassword toast={toast}/>} />
