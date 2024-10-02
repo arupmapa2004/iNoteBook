@@ -105,8 +105,8 @@ router.post('/signup', [
 });
 
 router.post('/signin', [
-    body('email').isEmail(),
-    body('password', 'Please Enter Your Password').exists(),
+    body('email','Password can not Empty').isEmail(),
+    body('password', 'Password can not Empty').exists(),
 ], async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -115,7 +115,8 @@ router.post('/signin', [
             message: errors.array()[0].msg
         });
     }
-
+    
+    console.log(req.body);
     const { email, password } = req.body;
     try {
         const user = await User.findOne({ email: email });
