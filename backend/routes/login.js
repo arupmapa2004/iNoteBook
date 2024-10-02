@@ -116,7 +116,6 @@ router.post('/signin', [
         });
     }
     
-    console.log(req.body);
     const { email, password } = req.body;
     try {
         const user = await User.findOne({ email: email });
@@ -141,8 +140,6 @@ router.post('/signin', [
         }
         const authToken = jwt.sign(userToken, process.env.SECRET);
         success = true;
-
-        req.session.user = userToken.user;
 
         res.status(200).json({
             message: "Successfully Logged in!",
