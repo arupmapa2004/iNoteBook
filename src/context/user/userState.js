@@ -6,8 +6,8 @@ function UserState(props)
     const [user, setUser] = useState('');
     const [passwordMsg, setPasswordMsg] = useState('');
     
-    const host = "http://localhost:5000";
-    //const host = "https://inotebook-lmva.onrender.com";
+    //const host = "http://localhost:5000";
+    const host = "https://inotebook-lmva.onrender.com";
 
     // login method
     const signin = async (email, password) =>{
@@ -49,6 +49,7 @@ function UserState(props)
             console.error("Error on fetching user: " + err);
         }
     }
+    //change password
     const changepassword = async (oldpassword,newpassword,cnfpassword)=>{
         const response = await fetch(`${host}/api/auth/changepassword`,{
               method:"PUT",
@@ -68,6 +69,7 @@ function UserState(props)
             props.toast.error(data.message);
         }
     }
+    //forget password
     const forgetpassword = async (email)=>{
         const response = await fetch(`${host}/api/auth/forgetpassword`,{
             method:"PUT",
@@ -86,6 +88,7 @@ function UserState(props)
           setPasswordMsg(data.message);
       }
     }
+    // image upload
     const imageupload = async (imageurl) =>{
         try {
             const formData = new FormData();

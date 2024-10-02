@@ -41,7 +41,7 @@ function Userprofile() {
             setDobFormatedDate(formateDob);
         }
         if (user.image) {
-            setImagePath(`http://localhost:5000/public/images/${user.image}`);
+            setImagePath(`https://inotebook-lmva.onrender.com/public/images/${user.image}`);
         } 
         else{
             setImagePath("https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?size=338&ext=jpg&ga=GA1.1.2008272138.1726617600&semt=ais_hybrid")

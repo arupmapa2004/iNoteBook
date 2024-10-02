@@ -8,8 +8,7 @@ function Signin(props) {
     let navigate = useNavigate();
     const context = useContext(userContext);
     const { signin } = context;
-    //const host = "http://localhost:5000";
-    //const host = "https://inotebook-lmva.onrender.com";
+    
     const handleSubmit = async (e) => {
         e.preventDefault();
         await signin(credentials.email, credentials.password);

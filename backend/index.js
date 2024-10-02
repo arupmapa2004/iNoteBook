@@ -5,8 +5,6 @@ const app = express();
 const cors = require('cors');
 const path = require('path');
 const dbConnection = require('./db');
-const checkSession = require('./middleware/session');
-const sessionData = require("./middleware/session")
 const PORT = process.env.PORT;
 
 app.use(cors());
@@ -14,8 +12,8 @@ app.use(express.json());
 dbConnection();
 
 app.use('/public', express.static(path.join(__dirname, 'public')));
-app.use('/api/auth',sessionData, require('./routes/login'));
-app.use('/api/notes',checkSession,require('./routes/notes'));
+app.use('/api/auth', require('./routes/login'));
+app.use('/api/notes', require('./routes/notes'));
 
 app.listen(PORT, async() => {
     try {
