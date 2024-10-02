@@ -12,7 +12,7 @@ function Notes() {
     const { getuser } = context2;
     let navigate = useNavigate();
     useEffect(() => {
-        if (localStorage.getItem('token')) {
+        if (sessionStorage.getItem('token')) {
             getuser();
             getnotes();
         }

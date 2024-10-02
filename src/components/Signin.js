@@ -13,7 +13,7 @@ function Signin(props) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         await signin(credentials.email, credentials.password);
-        const token = localStorage.getItem('token');
+        const token = sessionStorage.getItem('token');
         if(token)
         {
             navigate("/");

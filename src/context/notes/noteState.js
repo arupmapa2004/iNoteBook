@@ -1,24 +1,25 @@
 import React, { useState } from 'react';
+import { jsPDF } from 'jspdf';
 import NoteContext from './noteContext';
 
 function NoteState(props) {
     const host = "http://localhost:5000";
     //const host = "https://inotebook-lmva.onrender.com";
     const [notes, setNotes] = useState([]);
-    
-        // get all notes
+
+    // get all notes
     const getnotes = async () => {
         try {
             const response = await fetch(`${host}/api/notes/getallnotes`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
-                    "auth-token": localStorage.getItem('token')
+                    "auth-token": sessionStorage.getItem('token')
                 }
             });
 
             const data = await response.json();
-            
+
             if (data.success) {
                 setNotes(data.notes);
                 props.toast.success(data.message);
@@ -28,7 +29,7 @@ function NoteState(props) {
             }
         }
         catch (err) {
-            console.error("Error on fetching all notes " + err);
+            console.log("Error on fetching all notes " + err);
         }
     }
 
@@ -39,7 +40,7 @@ function NoteState(props) {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "auth-token": localStorage.getItem('token')
+                    "auth-token": sessionStorage.getItem('token')
                 },
                 body: JSON.stringify({ title, description, tag })
             });
@@ -55,7 +56,7 @@ function NoteState(props) {
             }
         }
         catch (err) {
-            console.error("Error on adding note " + err);
+            console.log("Error on adding note " + err);
         }
     }
     //edit note
@@ -65,7 +66,7 @@ function NoteState(props) {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
-                    "auth-token": localStorage.getItem('token')
+                    "auth-token": sessionStorage.getItem('token')
                 },
                 body: JSON.stringify({ title, description, tag })
             });
@@ -85,7 +86,40 @@ function NoteState(props) {
 
         }
         catch (err) {
-            console.error("Error on editing notes" + err);
+            console.log("Error on editing notes" + err);
+        }
+    }
+    //download note
+    const downloadnote = async (id) => {
+        try {
+            const response = await fetch(`${host}/api/notes/downloadnote/${id}`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+
+            const data = await response.json();
+
+            if (data.success) {
+                const pdf = new jsPDF();
+                const text = `
+                    Title: ${data.note.title} \n
+                    Description: ${data.note.description} \n
+                    Tag: ${data.note.tag} \n`
+                const pageWidth = 180; // 210mm - 30mm for margin (A4 width is 210mm)
+
+                // Automatically wrap the text to fit within the width
+                pdf.text(text, 10, 10, { maxWidth: pageWidth });
+                pdf.save("note.pdf");
+                props.toast.success("Notes downloaded successfully");
+            }
+            else {
+                props.toast.error(data.message);
+            }
+        }
+        catch (err) {
+            console.log("Error on downloading note" + err);
         }
     }
     //delete note
@@ -95,13 +129,9 @@ function NoteState(props) {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
-                    "auth-token": localStorage.getItem('token')
+                    "auth-token": sessionStorage.getItem('token')
                 }
             });
-
-            if (!response.ok) {
-                throw new Error(`Failed to delete note: ${response.status} ${response.statusText}`);
-            }
 
             const data = await response.json();
             if (data.success) {
@@ -114,11 +144,11 @@ function NoteState(props) {
             }
         }
         catch (err) {
-            console.error("Error on deleting notes" + err);
+            console.log("Error on deleting notes" + err);
         }
     }
     return (
-        <NoteContext.Provider value={{ notes, getnotes, addnote, editnote, deletenote }}>
+        <NoteContext.Provider value={{ notes, getnotes, addnote, editnote, downloadnote, deletenote }}>
             {props.children}
         </NoteContext.Provider>
     )

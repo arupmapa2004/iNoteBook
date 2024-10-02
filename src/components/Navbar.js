@@ -7,7 +7,7 @@ function Navbar() {
     const { user } = context;
     let navigate = useNavigate();
     const handleLogout = () => {
-        localStorage.removeItem('token');
+        sessionStorage.removeItem('token');
         navigate('/signin');
     }
     return (
@@ -26,7 +26,7 @@ function Navbar() {
                             <Link className="nav-link active" aria-current="page" to="/about">About</Link>
                         </li>
                     </ul>
-                    {!localStorage.getItem('token') ?
+                    {!sessionStorage.getItem('token') ?
                         <form className="d-flex">
                             <Link className="btn btn-primary mx-1" to="/signin" role="button">Signin</Link>
                             <Link className="btn btn-success mx-1" to="/signup" role="button">Signup</Link>

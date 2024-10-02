@@ -1,12 +1,12 @@
 import React, { useContext } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash, faPenToSquare } from "@fortawesome/free-solid-svg-icons";
+import { faTrash, faPenToSquare, faDownload } from "@fortawesome/free-solid-svg-icons";
 import '../App.css'
 import noteContext from "../context/notes/noteContext";
 
 function Noteitem(props) {
     const context = useContext(noteContext);
-    const { deletenote } = context;
+    const { deletenote, downloadnote } = context;
     const { note, updatenote } = props;
     return (
         <div className="col-md-3 my-2">
@@ -23,6 +23,14 @@ function Noteitem(props) {
                             data-bs-title="Edit notes"
                             size="lg"
                             onClick={async () => { await updatenote(note) }} />
+                            <FontAwesomeIcon icon={faDownload} 
+                            className="custom-icon"
+                            data-bs-toggle="tooltip"
+                            data-bs-placement="top"
+                            data-bs-custom-class="custom-tooltip"
+                            data-bs-title="Delete notes"
+                            size="lg"
+                            onClick={async () => { await downloadnote(note._id) }}/>
                         <FontAwesomeIcon icon={faTrash}
                             className="custom-icon"
                             data-bs-toggle="tooltip"

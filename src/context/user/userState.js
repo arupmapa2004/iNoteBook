@@ -20,7 +20,7 @@ function UserState(props)
         })
         const data = await response.json();
         if (data.success) {
-            localStorage.setItem('token', data.authToken);
+            sessionStorage.setItem('token', data.authToken);
             props.toast.success(data.message);
         }
         else {
@@ -34,7 +34,7 @@ function UserState(props)
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
-                    "auth-token": localStorage.getItem('token')
+                    "auth-token": sessionStorage.getItem('token')
                 }
             });
             const data = await response.json();
@@ -54,7 +54,7 @@ function UserState(props)
               method:"PUT",
               headers:{
                 "Content-Type":"application/json",
-                "auth-token":localStorage.getItem('token')
+                "auth-token":sessionStorage.getItem('token')
               },
               body: JSON.stringify({oldpassword:oldpassword,newpassword:newpassword,cnfpassword:cnfpassword})
         })
@@ -93,7 +93,7 @@ function UserState(props)
             const response = await fetch(`${host}/api/auth/imageupload`, {
                 method: "PUT",
                 headers: {
-                    "auth-token": localStorage.getItem('token')
+                    "auth-token": sessionStorage.getItem('token')
                 },
                 body: formData
             });
