@@ -12,6 +12,7 @@ const path = require('path');
 const fs = require('fs');
 const fetchuser = require('../middleware/fetchuser');
 
+//ROUTE 1 : for fetching user details -- (/api/getauser)
 router.get('/getuser', fetchuser, async (req, res) => {
     try {
         const userId = req.user.id;
@@ -39,6 +40,7 @@ router.get('/getuser', fetchuser, async (req, res) => {
     }
 })
 
+//ROUTE 2 : for user details registration -- (/api/signin)
 router.post('/signup', [
     body('name', 'Name should be at least 3 characters').isLength({ min: 3 }),
     body('email', 'Enter a valid email').isEmail(),
@@ -104,6 +106,7 @@ router.post('/signup', [
     }
 });
 
+//ROUTE 3 : for user login -- (/api/getauser)
 router.post('/signin', [
     body('email','Password can not Empty').isEmail(),
     body('password', 'Password can not Empty').exists(),
@@ -155,6 +158,7 @@ router.post('/signin', [
     }
 });
 
+//ROUTE 4 : for changing user password -- (/api/changepassword)
 router.put('/changepassword', fetchuser, async (req, res) => {
     try {
         const userId = req.user.id;
@@ -215,6 +219,7 @@ function generatePassword() {
     });
 }
 
+//ROUTE 5 : for fogetpassword -- (/api/fogetpassword)
 router.put('/forgetpassword', async (req, res) => {
     try {
         const email = req.body.email;
@@ -265,12 +270,14 @@ router.put('/forgetpassword', async (req, res) => {
     }
 })
 
+// multer file storage
 const storage = multer.diskStorage({
     destination: "./public/images",
     filename: (req, file, cb) => {
         cb(null, "image_" + Date.now() + path.extname(file.originalname));
     }
 })
+// multer file checking
 const upload = multer({
     storage: storage,
     fileFilter: (req, file, cb) => {
@@ -283,6 +290,8 @@ const upload = multer({
         }
     }
 })
+
+//ROUTE 6 : for uploading user image -- (/api/imageupload)
 router.put('/imageupload', fetchuser, upload.single('image'), async (req, res) => {
     try {
         const userId = req.user.id;
