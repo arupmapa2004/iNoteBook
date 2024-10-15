@@ -3,7 +3,7 @@ import userContext from "../context/user/userContext";
 
 function Userprofile() {
     const context = useContext(userContext);
-    const { user, imageupload } = context;
+    const { user, imageupload,getuser } = context;
     const [regFormatedDate, setRegFormatedDate] = useState("DD/MM/YYYY");
     const [dobFormatedDate, setDobFormatedDate] = useState("DD/MM/YYYY");
     const [imagePath, setImagePath] = useState(null);
@@ -18,7 +18,9 @@ function Userprofile() {
         const file = e.target.files[0]; // Get the selected file
         if (file) {
             await imageupload(file);
+            await getuser()
         }
+        
     }
     
     const formateDate = (d) => {
@@ -31,6 +33,10 @@ function Userprofile() {
         });
         return formattedDate;
     }
+
+    useEffect(()=>{
+     getuser()
+    },[])
     useEffect(() => {
         if (user.date) {
             const formateReg = formateDate(user.date);
@@ -41,12 +47,13 @@ function Userprofile() {
             setDobFormatedDate(formateDob);
         }
         if (user.image) {
-            setImagePath(`https://inotebook-lmva.onrender.com/public/images/${user.image}`);
+            //setImagePath(`https://inotebook-lmva.onrender.com/public/images/${user.image}`);
+            setImagePath(`http://localhost:5000/public/images/${user.image}`);
         } 
         else{
             setImagePath("https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?size=338&ext=jpg&ga=GA1.1.2008272138.1726617600&semt=ais_hybrid")
         }
-    }, [user.date, user.dob, user.image])
+    }, [user])
     return (
         <>
             <h1 className="my-3">User Details</h1>

@@ -103,15 +103,37 @@ function NoteState(props) {
 
             if (data.success) {
                 const pdf = new jsPDF();
-                const text = `
-                    Title: ${data.note.title} \n
-                    Description: ${data.note.description} \n
-                    Tag: ${data.note.tag} \n`
-                const pageWidth = 180; // 210mm - 30mm for margin (A4 width is 210mm)
-
+            
+                // Set PDF properties
+                const pageWidth = 210;  // A4 width in mm
+                const pageHeight = 297; // A4 height in mm
+                const margin = 15;      // Define margin
+                const contentWidth = pageWidth - 2 * margin; // Content width inside the margins
+                const headingFontSize = 18;
+                const textFontSize = 16;                
+                // Add heading
+                pdf.setFontSize(headingFontSize);
+                pdf.setFont("helvetica", "bold");
+                pdf.text("iNoteBook", pageWidth / 2, margin, { align: "center" });
+                
+                // Add border
+                pdf.setDrawColor(0);  // Black border
+                pdf.rect(margin, margin + 10, contentWidth, pageHeight - 2 * margin - 10); // Create a border
+            
+                // Add content (title, description, tag)
+                pdf.setFontSize(textFontSize);
+                pdf.setFont("helvetica", "normal");
+                
+                const text = `  Title: ${data.note.title} \n \n  Description: ${data.note.description} \n \n  Tag: ${data.note.tag} \n`;
+            
                 // Automatically wrap the text to fit within the width
-                pdf.text(text, 10, 10, { maxWidth: pageWidth });
+                const yOffset = margin + 20;  // Space below heading
+                pdf.text(text, margin + 5, yOffset, { maxWidth: contentWidth - 10 });
+                
+                // Save the PDF
                 pdf.save("note.pdf");
+            
+                // Success message
                 props.toast.success("Notes downloaded successfully");
             }
             else {
