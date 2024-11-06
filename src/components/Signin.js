@@ -15,7 +15,9 @@ function Signin(props) {
         const token = sessionStorage.getItem('token');
         if(token)
         {
-            navigate("/");
+            setTimeout(() => {  
+                navigate("/");
+            }, 1000);
         }
         else{
             navigate("/signin");

@@ -15,6 +15,9 @@ app.use('/public', express.static(path.join(__dirname, 'public')));
 app.use('/api/auth', require('./routes/login'));
 app.use('/api/notes', require('./routes/notes'));
 
+app.get('*', (req, res)=>{
+    res.sendFile(__dirname + '/404.html');
+})
 app.listen(PORT, async() => {
     try {
         console.log("Server Is Running on https://inotebook-lmva.onrender.com");
