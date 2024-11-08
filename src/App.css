@@ -45,3 +45,84 @@
   height: 40px; 
   width: 500px;  
 }
+/* Add hover-effect class for the note item */
+.hover-effect {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hover-effect:hover {
+  background-color: lightgreen;
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+}
+/* Forget Password Page Custom Styles */
+.forget-password-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.forget-password-form {
+  background-color: #f8f9fa;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.forget-password-form h1 {
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.forget-password-form p {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.forget-password-form input.form-control {
+  font-size: 1rem;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.forget-password-form button.btn-primary {
+  font-size: 1.1rem;
+  padding: 12px;
+  border-radius: 8px;
+  background-color: #007bff;
+  border-color: #007bff;
+  color: white;
+  width: 100%;
+  transition: background-color 0.3s ease;
+}
+
+.forget-password-form button.btn-primary:hover {
+  background-color: #0056b3;
+  border-color: #0056b3;
+}
+
+.forget-password-form .form-text {
+  font-size: 0.9rem;
+  color: #dc3545;
+  margin-top: 5px;
+}
+
+/* Responsive Design for Mobile */
+@media (max-width: 576px) {
+  .forget-password-container {
+      padding: 15px;
+  }
+
+  .forget-password-form input.form-control {
+      padding: 12px;
+  }
+
+  .forget-password-form button.btn-primary {
+      padding: 14px;
+  }
+}

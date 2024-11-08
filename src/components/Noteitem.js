@@ -9,38 +9,32 @@ function Noteitem(props) {
     const { deletenote, downloadnote } = context;
     const { note, updatenote } = props;
     return (
-        <div className="col-md-3 my-2">
-            <div className="card">
-                <div className="card-body">
-                    <h5 className="card-title">{note.title}</h5>
-                    <p className="card-text">{note.description}</p>
-                    <p className="card-text">{note.tag}</p>
-                    <div className="d-flex align-item-center">
-                        <FontAwesomeIcon icon={faPenToSquare}
-                            className="custom-icon"
-                            data-bs-toggle="tooltip" data-bs-placement="top"
-                            data-bs-custom-class="custom-tooltip"
-                            data-bs-title="Edit notes"
-                            size="lg"
-                            onClick={async () => { await updatenote(note) }} />
-                            <FontAwesomeIcon icon={faDownload} 
-                            className="custom-icon"
-                            data-bs-toggle="tooltip"
-                            data-bs-placement="top"
-                            data-bs-custom-class="custom-tooltip"
-                            data-bs-title="Delete notes"
-                            size="lg"
-                            onClick={async () => { await downloadnote(note._id) }}/>
-                        <FontAwesomeIcon icon={faTrash}
-                            className="custom-icon"
-                            data-bs-toggle="tooltip"
-                            data-bs-placement="top"
-                            data-bs-custom-class="custom-tooltip"
-                            data-bs-title="Delete notes"
-                            size="lg"
-                            onClick={async () => { await deletenote(note._id) }} />
-                    </div>
-                </div>
+        <div className="note-item p-3 mb-3 hover-effect" style={{ border: "1px solid #ddd", borderRadius: "8px", maxWidth: "280px" }}>
+            <h5 style={{ color: "#0d6efd", fontWeight: "bold" }}>{note.title}</h5>
+            <p className="text-muted" style={{ fontSize: "0.9rem" }}>{note.description}</p>
+            <p className="text-secondary" style={{ fontStyle: "italic", fontSize: "0.85rem" }}>{note.tag}</p>
+            <div className="d-flex justify-content-start mt-2">
+                <FontAwesomeIcon
+                    icon={faPenToSquare}
+                    className="custom-icon me-3"
+                    title="Edit Note"
+                    style={{ color: "#0d6efd", cursor: "pointer" }}
+                    onClick={async () => { await updatenote(note); }}
+                />
+                <FontAwesomeIcon
+                    icon={faDownload}
+                    className="custom-icon me-3"
+                    title="Download Note"
+                    style={{ color: "#28a745", cursor: "pointer" }}
+                    onClick={async () => { await downloadnote(note._id); }}
+                />
+                <FontAwesomeIcon
+                    icon={faTrash}
+                    className="custom-icon"
+                    title="Delete Note"
+                    style={{ color: "#dc3545", cursor: "pointer" }}
+                    onClick={async () => { await deletenote(note._id); }}
+                />
             </div>
         </div>
     )

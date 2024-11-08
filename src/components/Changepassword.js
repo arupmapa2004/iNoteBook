@@ -20,25 +20,29 @@ function Changepassword() {
     }
     return (
         <>
-            <h1>Change Password</h1>
-            <div className="container my-5">
-                <div className="mb-3">
-                    <label htmlFor="formGroupExampleInput" className="form-label"><strong>Current Password</strong></label>
-                    <input type="password" className="form-control custom-input" id="currentPass" name="oldPass" placeholder="Enter current password" onChange={onChange} value={password.oldPass}/>
-                </div>
-                <div className="mb-3">
-                    <label htmlFor="formGroupExampleInput" className="form-label"><strong>New Password</strong></label>
-                    <input type="password" className="form-control custom-input" id="newpass" name="newPass" placeholder="Enter new password" onChange={onChange} value={password.newPass}/>
-                </div>
-                <div className="mb-3">
-                    <label htmlFor="formGroupExampleInput2" className="form-label"><strong>Confrim Password</strong></label>
-                    <input type="password" className="form-control custom-input" id="cnfPass" name="cnfPass" placeholder="Enter confrim password" onChange={onChange} value={password.cnfPass}/>
-                </div>
-                <div className="d-flex mb-3">
-                    <button type="submit" className="btn btn-danger mx-2" onClick={onChangeClick}>Change</button>
-                    <button type="submit" className="btn btn-warning mx-2" onClick={onResetClick}>Reset</button>
-                </div>
+            <div className="d-flex justify-content-center align-items-center vh-100">
+            <div className="card p-4 shadow-lg" style={{ width: "400px", borderRadius: "10px", backgroundColor: "rgba(255, 255, 255, 0.9)" }}>
+                <h2 className="text-center mb-4" style={{ color: "#0d6efd" }}>Change Password</h2>
+                <form>
+                    <div className="mb-3">
+                        <label htmlFor="currentPass" className="form-label fw-bold">Current Password</label>
+                        <input type="password" className="form-control" id="currentPass" name="oldPass" placeholder="Enter current password" onChange={onChange} value={password.oldPass} required />
+                    </div>
+                    <div className="mb-3">
+                        <label htmlFor="newPass" className="form-label fw-bold">New Password</label>
+                        <input type="password" className="form-control" id="newPass" name="newPass" placeholder="Enter new password" onChange={onChange} value={password.newPass} required />
+                    </div>
+                    <div className="mb-3">
+                        <label htmlFor="cnfPass" className="form-label fw-bold">Confirm Password</label>
+                        <input type="password" className="form-control" id="cnfPass" name="cnfPass" placeholder="Confirm new password" onChange={onChange} value={password.cnfPass} required />
+                    </div>
+                    <div className="d-grid gap-2">
+                        <button type="submit" className="btn btn-primary" onClick={onChangeClick}>Change Password</button>
+                        <button type="reset" className="btn btn-secondary" onClick={onResetClick}>Reset</button>
+                    </div>
+                </form>
             </div>
+        </div>
         </>
     )
 }

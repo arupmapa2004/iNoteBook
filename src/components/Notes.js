@@ -39,7 +39,6 @@ function Notes() {
     return (
         <>
             <div className="container">
-                <h2>Add Note Here</h2>
                 <Addnote />
             </div>
 
@@ -76,11 +75,15 @@ function Notes() {
                     </div>
                 </div>
             </div>
-            <div className="row my-3">
+            <div className="row mx-3">
                 <h2>Your Notes</h2>
                 {notes.length !== 0 ? (
                     notes.map((note) => {
-                        return <Noteitem key={note._id} updatenote={updatenote} note={note} />;
+                        return (
+                            <div className="col-md-3 mb-3 note-item-container" key={note._id}>
+                                <Noteitem updatenote={updatenote} note={note} />
+                            </div>
+                        );
                     })
                 ) : (
                     <p className="mx-3">No notes available!</p>

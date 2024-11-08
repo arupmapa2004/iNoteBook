@@ -59,7 +59,7 @@ function Userprofile() {
             <h1 className="my-3">User Details</h1>
             <div className="row">
                 <div className="container col-md-4 my-2" id="img" >
-                    <img src={imagePath || user.image} className="img-thumbnail" alt="user-Image" style={{ border: "3px solid blue", height:"300px", width:"300px" }} onClick={imageUpload} />
+                    <img src={imagePath || user.image} className="img-thumbnail" alt="user-Image" style={{ border: "3px solid blue", height:"300px", width:"300px", borderRadius:"100%"}} onClick={imageUpload} />
                     <input ref={imageRef} type="file" style={{ display: "none" }} accept="image/*" onChange={handleImageChange} />
                 </div>
                 <div className="container col-md-6" id="details">

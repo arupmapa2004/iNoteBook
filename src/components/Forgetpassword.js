@@ -29,20 +29,31 @@ function Forgetpassword(props) {
     }
     return (
         <>
-            <div className="container">
+             <div className="forget-password-container mt-5">
                 <h1>Reset Your Password</h1>
-                <strong>To reset your password, enter your email below and submit.</strong>
-                <br />
-                <strong> An email will be sent to you with instructions about how to complete the process.</strong>
+                <p>
+                    <strong>To reset your password, enter your email below and submit.</strong><br />
+                    <strong>An email will be sent to you with instructions about how to complete the process.</strong>
+                </p>
             </div>
-            <div className="container my-4">
-                <form onSubmit={handleForgetPassword}>
-                    <div className="mb-3">
+            <div className="forget-password-container my-5">
+                <form onSubmit={handleForgetPassword} className="forget-password-form d-flex flex-column align-items-center">
+                    <div className="mb-3 w-75">
                         <label htmlFor="email" className="form-label"><strong>Email address</strong></label>
-                        <input type="email" className="form-control" name="email" id="email" aria-describedby="emailHelp" style={{ width: "600px" }} value={email.email} onChange={onChange} />
-                        <div id="emailMessage" className="form-text" style={{ color: 'red' }}>{response}</div>
+                        <input
+                            type="email"
+                            className="form-control"
+                            name="email"
+                            id="email"
+                            value={email.email}
+                            onChange={onChange}
+                            placeholder="Enter your email"
+                        />
+                        <div id="emailMessage" className="form-text text-danger mt-2">{response}</div>
                     </div>
-                    <button type="submit" className="btn btn-primary">Reset Password</button>
+                    <button type="submit" className="btn btn-primary w-75 mt-3">
+                        Reset Password
+                    </button>
                 </form>
             </div>
         </>
