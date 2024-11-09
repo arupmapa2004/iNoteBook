@@ -57,7 +57,7 @@ function UserState(props)
                 "Content-Type":"application/json",
                 "auth-token":sessionStorage.getItem('token')
               },
-              body: JSON.stringify({oldpassword:oldpassword,newpassword:newpassword,cnfpassword:cnfpassword})
+              body: JSON.stringify({oldPass:oldpassword,newPass:newpassword,cnfPass:cnfpassword})
         })
 
         const data = await response.json();

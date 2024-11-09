@@ -26,7 +26,7 @@ router.get('/getallnotes', fetchuser, async (req, res) => {
 router.post('/addnotes', fetchuser, [
     body('title', 'Please Give Title Atleast 5 Character').isLength({ min: 5 }),
     body('description', 'Please Give Description Atleast 7 Character').isLength({ min: 7 }),
-    body('title', 'Please Give Tag Atleast 3 Character').isLength({ min: 3 })
+    body('tag', 'Please Give Tag Atleast 3 Character').isLength({ min: 3 })
 ], async (req, res) => {
     try {
         const { title, description, tag } = req.body;

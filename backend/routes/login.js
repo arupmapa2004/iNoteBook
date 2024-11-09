@@ -159,12 +159,16 @@ router.post('/signin', [
 });
 
 //ROUTE 4 : for changing user password -- (/api/changepassword)
-router.put('/changepassword',[
-    body('oldpassword','Password can not Empty').exists(),
-    body('newpassword', 'New Password can not Empty').exists(),
-    body('cnfpassword', 'Confirm Password can not Empty').exists(),
-], fetchuser, async (req, res) => {
+router.put('/changepassword', fetchuser, [
+    body('oldPass','Old Password can not Empty').isLength({ min: 1 }),
+    body('newPass', 'New Password can not Empty').isLength({ min: 1 }),
+    body('cnfPass', 'Confirm Password can not Empty').isLength({ min: 1 }),
+], async (req, res) => {
     try {
+        const error = validationResult(req);
+        if (!error.isEmpty()) {
+            return res.status(400).json({ message: error.array()[0].msg });
+        }
         const userId = req.user.id;
         const user = await User.findById(userId);
         if (!user) {
@@ -173,8 +177,8 @@ router.put('/changepassword',[
                 success: false
             })
         }
-        const { oldpassword, newpassword, cnfpassword } = req.body;
-        const passwordCheck = await bcrypt.compare(oldpassword, user.password);
+        const { oldPass, newPass, cnfPass } = req.body;
+        const passwordCheck = await bcrypt.compare(oldPass, user.password);
 
         if (!passwordCheck) {
             return res.status(402).json({
@@ -182,14 +186,14 @@ router.put('/changepassword',[
                 success: false
             })
         }
-        if (newpassword !== cnfpassword) {
+        if (newPass !== cnfPass) {
             return res.status(401).json({
                 message: "Confrim password not match!",
                 success: false
             })
         }
         const salt = await bcrypt.genSalt(10);
-        const newpass = await bcrypt.hash(newpassword, salt);
+        const newpass = await bcrypt.hash(newPass, salt);
         await User.findByIdAndUpdate(user._id, { password: newpass }, { new: true });
         return res.status(200).json({
             message: "Password Changed Successfully",
