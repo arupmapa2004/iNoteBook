@@ -108,7 +108,7 @@ router.post('/signup', [
 
 //ROUTE 3 : for user login -- (/api/getauser)
 router.post('/signin', [
-    body('email','Password can not Empty').isEmail(),
+    body('email','Email can not Empty').isEmail(),
     body('password', 'Password can not Empty').exists(),
 ], async (req, res) => {
     const errors = validationResult(req);
@@ -159,7 +159,11 @@ router.post('/signin', [
 });
 
 //ROUTE 4 : for changing user password -- (/api/changepassword)
-router.put('/changepassword', fetchuser, async (req, res) => {
+router.put('/changepassword',[
+    body('oldpassword','Password can not Empty').exists(),
+    body('newpassword', 'New Password can not Empty').exists(),
+    body('cnfpassword', 'Confirm Password can not Empty').exists(),
+], fetchuser, async (req, res) => {
     try {
         const userId = req.user.id;
         const user = await User.findById(userId);
