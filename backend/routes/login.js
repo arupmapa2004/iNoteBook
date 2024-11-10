@@ -215,8 +215,8 @@ const transporter = nodemailer.createTransport({
     host: 'smtp@gmail.com',
     port: 587,
     auth: {
-        user: 'mapaarup@gmail.com', // Your email address
-        pass: 'pely hrod txpk jwee'
+        user: 'inotebookinfo@gmail.com',
+        pass: 'minl xrwx jzvp zoid'
     }
 });
 
@@ -242,7 +242,7 @@ router.put('/forgetpassword', async (req, res) => {
 
         // Compose email
         const mailOptions = {
-            from: 'mapaarup@gmail.com',
+            from: 'inotebookinfo@gmail.com',
             to: email,
             subject: 'Password Reset',
             html: `<p>Dear ${user.name},</p>
