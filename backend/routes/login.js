@@ -242,18 +242,15 @@ router.put('/forgetpassword', async (req, res) => {
 
         // Compose email
         const mailOptions = {
-            from: 'inotebookinfo@gmail.com',
+            from: '"iNoteBook" <inotebookinfo@gmail.com>',
             to: email,
             subject: 'Password Reset',
             html: `<p>Dear ${user.name},</p>
             </br>
             <p>Greetings from iNoteBook!</p>
-            </br></br>
             <p>We want to let you know that your password has been reset.</p>
             <p>New password is: <strong>${newpass}</strong></p>
-            </br></br>
             <b style="color: red;">This is an auto generate email, please do not reply and do not share your password!</b>
-            </br></br></br>
             <p>Regards</p>
             <p>Team iNoteBook</p>
             `
