@@ -3,8 +3,8 @@ import { jsPDF } from 'jspdf';
 import NoteContext from './noteContext';
 
 function NoteState(props) {
-    //const host = "http://localhost:5000";
-    const host = "https://inotebook-lmva.onrender.com";
+    const host = "http://localhost:5000";
+    //const host = "https://inotebook-lmva.onrender.com";
     const [notes, setNotes] = useState([]);
 
     // get all notes
@@ -22,7 +22,6 @@ function NoteState(props) {
 
             if (data.success) {
                 setNotes(data.notes);
-                props.toast.success(data.message);
             }
             else {
                 props.toast.error(data.message);

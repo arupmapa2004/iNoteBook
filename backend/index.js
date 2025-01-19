@@ -13,6 +13,7 @@ dbConnection();
 
 app.use('/public', express.static(path.join(__dirname, 'public')));
 app.use('/api/auth', require('./routes/login'));
+app.use('/api/admin/', require('./routes/admin'));
 app.use('/api/notes', require('./routes/notes'));
 
 app.listen(PORT, async() => {

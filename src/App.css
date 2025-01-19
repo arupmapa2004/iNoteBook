@@ -126,3 +126,29 @@
       padding: 14px;
   }
 }
+
+
+.card {
+  border-radius: 8px;
+  transition: transform 0.2s ease;
+}
+
+.card:hover {
+  transform: scale(1.02);
+}
+
+
+.card-title {
+  font-weight: bold;
+  font-size: 1.25rem;
+}
+
+.card-text {
+  font-size: 0.95rem;
+}
+
+.custom-card:hover{
+  transform: scale(1.02);
+  border: 3px solid gray;
+}
+

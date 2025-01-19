@@ -40,7 +40,7 @@ router.get('/getuser', fetchuser, async (req, res) => {
     }
 })
 
-//ROUTE 2 : for user details registration -- (/api/signin)
+//ROUTE 2 : for user details registration -- (/api/signup)
 router.post('/signup', [
     body('name', 'Name should be at least 3 characters').isLength({ min: 3 }),
     body('email', 'Enter a valid email').isEmail(),
@@ -106,7 +106,7 @@ router.post('/signup', [
     }
 });
 
-//ROUTE 3 : for user login -- (/api/getauser)
+//ROUTE 3 : for user login -- (/api/signin)
 router.post('/signin', [
     body('email','Email can not Empty').isEmail(),
     body('password', 'Password can not Empty').exists(),
@@ -120,14 +120,17 @@ router.post('/signin', [
     }
     
     const { email, password } = req.body;
+
     try {
         const user = await User.findOne({ email: email });
+        
         if (!user) {
             return res.status(400).json({
                 message: "User Not Found!",
                 success: false
             })
         }
+    
         const passwordCheck = await bcrypt.compare(password, user.password);
         if (!passwordCheck) {
             return res.status(400).send({
@@ -135,10 +138,12 @@ router.post('/signin', [
                 success: false
             });
         }
+        
         const userToken = {
             user: {
                 id: user.id,
-                name: user.name
+                name: user.name,
+                role: user.role
             }
         }
         const authToken = jwt.sign(userToken, process.env.SECRET);

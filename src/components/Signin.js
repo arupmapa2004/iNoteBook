@@ -12,9 +12,20 @@ function Signin(props) {
         e.preventDefault();
         await signin(credentials.email, credentials.password);
         const token = sessionStorage.getItem('token');
+
         if (token) {
-            setTimeout(() => {  
+            // Decode the token to extract payload
+            const base64Payload = token.split('.')[1];
+            const decodedPayload = JSON.parse(atob(base64Payload)); // Decode and parse    
+            // Access the role from the nested user object
+            const userRole = decodedPayload.user?.role; // Use optional chaining for safety
+
+            setTimeout(() => {
+                if(userRole === "admin")
+                navigate("/admin-dashboard");
+               else{
                 navigate("/");
+               }
             }, 1000);
         } else {
             navigate("/signin");
