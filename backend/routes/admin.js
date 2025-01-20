@@ -13,7 +13,7 @@ const path = require('path');
 const fs = require('fs');
 const fetchuser = require('../middleware/fetchuser');
 
-router.get('/getallusers', fetchuser, async (req, res) => {
+router.get('/get-all-users', fetchuser, async (req, res) => {
     const userId = req.user.id;
     const user = await User.findById(userId);
     try {
@@ -43,27 +43,25 @@ router.get('/getallusers', fetchuser, async (req, res) => {
         })
     }
 })
-router.get('/getusernotes/:id',fetchuser, async(req, res)=>{
+router.get('/get-user-notes/:id', fetchuser, async (req, res) => {
     try {
         const user = await User.findById(req.user.id);
 
-        if(!user)
-        {
+        if (!user) {
             return res.status(404).json({
                 message: "Admin user not found",
                 success: false
             })
         }
-        if(user.role !== 'admin')
-        {
+        if (user.role !== 'admin') {
             return res.status(405).json({
                 message: "Only admin can access",
                 success: false
             })
         }
-        const notes = await Note.find({user: req.params.id});
+        const notes = await Note.find({ user: req.params.id });
         return res.status(200).json({
-            message:"User notes fetch successfully",
+            message: "User notes fetch successfully",
             success: true,
             notes: notes
         })
@@ -75,7 +73,54 @@ router.get('/getusernotes/:id',fetchuser, async(req, res)=>{
         })
     }
 })
-router.delete('/deleteuser/:id', fetchuser, async (req, res) => {
+router.put('/make-admin-or-not/:id', fetchuser, async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id);
+
+        if (!user) {
+            return res.status(404).json({
+                message: "Admin user not found",
+                success: false
+            })
+        }
+        if (user.role !== 'admin') {
+            return res.status(405).json({
+                message: "Only admin can do this",
+                success: false
+            })
+        }
+
+        const targetUser = await User.findById(req.params.id);
+
+        if (!targetUser) {
+            return res.status(404).json({
+                message: "User not found",
+                success: false
+            });
+        }
+
+        // Toggle role
+        const newRole = targetUser.role === 'user' ? 'admin' : 'user';
+        const updatedUser = await User.findByIdAndUpdate(
+            req.params.id,
+            { role: newRole },
+            { new: true, runValidators: true } // This returns the updated document
+        );
+
+        return res.status(200).json({
+            message: "User role changed successfully",
+            success: true,
+            role: updatedUser.role // Return the updated role
+        });
+    } catch (error) {
+        console.log("Error on fetching user notes: " + error);
+        return res.status(505).json({
+            message: "505 Internal server error",
+            success: false
+        })
+    }
+})
+router.delete('/delete-user/:id', fetchuser, async (req, res) => {
 
     try {
         const userId = req.user.id;
@@ -102,12 +147,12 @@ router.delete('/deleteuser/:id', fetchuser, async (req, res) => {
                 success: false
             })
         }
- 
-        await Note.deleteMany({user: userid});
-        await User.findByIdAndDelete(userid); 
-        
+
+        await Note.deleteMany({ user: userid });
+        await User.findByIdAndDelete(userid);
+
         return res.status(200).json({
-            message:"User deleted Successfully",
+            message: "User deleted Successfully",
             success: true
         })
 

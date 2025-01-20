@@ -12,7 +12,7 @@ function AdminState(props) {
     // Return all the users
     const getAllUsers = async (props) => {
         try {
-            const response = await fetch(`${host}/api/admin/getallusers`, {
+            const response = await fetch(`${host}/api/admin/get-all-users`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -34,7 +34,7 @@ function AdminState(props) {
     // Return One users all details
     const getUserNotes = async (userId) => {
         try {
-            const response = await fetch(`${host}/api/admin/getusernotes/${userId}`, {
+            const response = await fetch(`${host}/api/admin/get-user-notes/${userId}`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -54,10 +54,34 @@ function AdminState(props) {
             console.error("Error on getting user details: " + error);
         }
     }
+    // Make Admin Or Not
+     const makeAdminOrNot = async (userId) =>{
+        try {
+            const response = await fetch(`${host}/api/admin/make-admin-or-not/${userId}`,{
+                method: "PUT",
+                headers:{
+                    "Content-Type" : "application/json",
+                    "auth-token": sessionStorage.getItem('token')
+                }
+            })
+    
+            const data = await response.json();
+            if(data.success)
+            {
+               toast.success(data.message);
+               return data.role;
+            }
+            else{
+                toast.error(data.message);
+            }
+        } catch (error) {
+            console.log("Error on Make user admin: " + error);
+        }
+     }
     // delete One user
     const deleteUser = async (id) => {
         try {
-            const response = await fetch(`${host}/api/admin/deleteuser/${id}`, {
+            const response = await fetch(`${host}/api/admin/delete-user/${id}`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
@@ -80,7 +104,7 @@ function AdminState(props) {
         }
     }
     return (
-        <adminContext.Provider value={{ users, userNotes, getAllUsers, getUserNotes, deleteUser }}>
+        <adminContext.Provider value={{ users, userNotes, getAllUsers, getUserNotes, makeAdminOrNot, deleteUser }}>
             {props.children}
         </adminContext.Provider>
     )

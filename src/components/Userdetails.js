@@ -7,13 +7,15 @@ function Userdetails() {
     const location = useLocation();
     const user = location.state?.user;
     const context = useContext(adminContext);
-    const { userNotes, getUserNotes } = context;
+    const { userNotes, getUserNotes, makeAdminOrNot } = context;
     const [regFormatedDate, setRegFormatedDate] = useState("DD/MM/YYYY");
     const [dobFormatedDate, setDobFormatedDate] = useState("DD/MM/YYYY");
     const [imagePath, setImagePath] = useState(
         "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?size=338&ext=jpg&ga=GA1.1.2008272138.1726617600&semt=ais_hybrid"
     );
     const [mode, setMode] = useState("hide");
+    const [userRole, setUserRole] = useState(user.role);
+
 
     const formateDate = (d) => {
         const dateString = d;
@@ -28,11 +30,11 @@ function Userdetails() {
     const handleMode = () => {
         setMode((prevMode) => (prevMode === "show" ? "hide" : "show"));
     };
-    
-    useEffect(()=>{
+
+    useEffect(() => {
         getUserNotes(user._id);
-    },[userNotes]);
-    
+    }, [user._id]);
+
     useEffect(() => {
         if (user?.date) {
             const formateReg = formateDate(user.date);
@@ -53,86 +55,129 @@ function Userdetails() {
 
     return (
         <>
-            <h1 className="my-3">User Details</h1>
-            <div className="row">
-                <div className="container col-md-4 my-2" id="img">
-                    <img
-                        src={imagePath || user.image}
-                        className="img-thumbnail"
-                        alt="user-Image"
-                        style={{
-                            border: "3px solid blue",
-                            height: "300px",
-                            width: "300px",
-                            borderRadius: "100%",
-                        }}
-                    />
-                </div>
-                <div className="container col-md-6" id="details">
-                    <h4>
-                        Name: <strong style={{ color: "royalblue" }}>{user.name}</strong>
-                    </h4>
-                    <br />
-                    <h4>
-                        Email: <strong style={{ color: "royalblue" }}>{user.email}</strong>
-                    </h4>
-                    <br />
-                    <h4>
-                        Contact No: <strong style={{ color: "royalblue" }}>{user.contactno}</strong>
-                    </h4>
-                    <br />
-                    <h4>
-                        Date of Birth: <strong style={{ color: "royalblue" }}>{dobFormatedDate}</strong>
-                    </h4>
-                    <br />
-                    <h4>
-                        Gender: <strong style={{ color: "royalblue" }}>{user.gender}</strong>
-                    </h4>
-                    <br />
-                    <h4>
-                        City: <strong style={{ color: "royalblue" }}>{user.city}</strong>
-                    </h4>
-                    <br />
-                    <h4>
-                        State: <strong style={{ color: "royalblue" }}>{user.state}</strong>
-                    </h4>
-                    <br />
-                    <h4>
-                        Registration Date: <strong style={{ color: "rosybrown" }}>{regFormatedDate}</strong>
-                    </h4>
-                </div>
-            </div>
-            <div className="container my-3">
-                {mode === "show" ? (
-                    <>
-                        <div className="container my-2">
-                            <button className="btn btn-sm btn-info text-white" onClick={handleMode}>
-                                <i className="bi bi-eye"></i> Hide Notes
-                            </button>
+            <div className="container my-5">
+                <div className="row">
+                    {/* User Card */}
+                    <div className="col-lg-4 col-md-6 text-center">
+                        <div className="card shadow-lg border-0">
+                            <img
+                                src={imagePath || user.image}
+                                className="card-img-top mx-auto my-4 rounded-circle"
+                                alt="user-Image"
+                                style={{
+                                    height: "200px",
+                                    width: "200px",
+                                    objectFit: "cover",
+                                }}
+                            />
+                            <div className="card-body">
+                                <h3 className="card-title">{user.name}</h3>
+                                <p className="text-muted">{user.email}</p>
+                                <h5 className="text-info">Contact: {user.contactno}</h5>
+                                <button
+                                    className="btn btn-primary mt-3 mx-2"
+                                    onClick={handleMode}
+                                >
+                                    {mode === "show" ? "Hide Notes" : "Show Notes"}
+                                </button>
+                                <button
+                                    className="btn btn-danger mt-3 mx-2"
+                                    onClick={async () => {
+                                        const updatedRole = await makeAdminOrNot(user._id);
+                                        setUserRole(updatedRole);
+                                    }}
+                                >
+                                    {userRole === "user" ? "Make Admin" : "Dismiss Admin"}
+                                </button>
+                            </div>
                         </div>
+                    </div>
+
+                    {/* User Details */}
+                    <div className="col-lg-8 col-md-6">
+                        <div
+                            className="card shadow-lg border-0 p-5"
+                            style={{ borderRadius: "12px", backgroundColor: "#f9f9f9" }}
+                        >
+                            <h4
+                                className="text-uppercase mb-4"
+                                style={{ fontWeight: "bold", fontSize: "1.5rem" }}
+                            >
+                                User Details
+                            </h4>
+                            <ul
+                                className="list-unstyled"
+                                style={{ fontSize: "1.2rem", lineHeight: "2" }}
+                            >
+                                <li>
+                                    <strong>Date of Birth:</strong>{" "}
+                                    <span
+                                        className="text-primary"
+                                        style={{ fontWeight: "500" }}
+                                    >
+                                        {dobFormatedDate}
+                                    </span>
+                                </li>
+                                <li>
+                                    <strong>Gender:</strong>{" "}
+                                    <span
+                                        className="text-primary"
+                                        style={{ fontWeight: "500" }}
+                                    >
+                                        {user.gender}
+                                    </span>
+                                </li>
+                                <li>
+                                    <strong>City:</strong>{" "}
+                                    <span
+                                        className="text-primary"
+                                        style={{ fontWeight: "500" }}
+                                    >
+                                        {user.city}
+                                    </span>
+                                </li>
+                                <li>
+                                    <strong>State:</strong>{" "}
+                                    <span
+                                        className="text-primary"
+                                        style={{ fontWeight: "500" }}
+                                    >
+                                        {user.state}
+                                    </span>
+                                </li>
+                                <li>
+                                    <strong>Registration Date:</strong>{" "}
+                                    <span
+                                        className="text-success"
+                                        style={{ fontWeight: "500" }}
+                                    >
+                                        {regFormatedDate}
+                                    </span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Notes Section */}
+                {mode === "show" && (
+                    <div className="mt-5">
+                        <h3>User Notes</h3>
                         <div className="row mx-3">
-                            <h2>User Notes</h2>
                             {userNotes.length !== 0 ? (
-                                userNotes.map((note) => {
-                                    return (
-                                        <div className="col-md-3 mb-3 note-item-container" key={note._id}>
-                                            <Noteitem note={note} />
-                                        </div>
-                                    );
-                                })
+                                userNotes.map((note) => (
+                                    <div
+                                        className="col-md-3 mb-3 note-item-container"
+                                        key={note._id}
+                                    >
+                                        <Noteitem note={note} userId={user._id} />
+                                    </div>
+                                ))
                             ) : (
-                                <p className="mx-3">No notes available!</p>
+                                <p className="text-muted">No notes available!</p>
                             )}
                         </div>
-                    </>
-                ) : (
-                    <>
-                        <div className="container">
-                            <button className="btn btn-sm btn-info text-white" onClick={handleMode}>
-                                <i className="bi bi-eye"></i> Show Notes
-                            </button>
-                        </div>
-                    </>
+                    </div>
                 )}
             </div>
         </>

@@ -9,7 +9,7 @@ function Notes() {
     const context1 = useContext(noteContext);
     const context2 = useContext(userContext);
     const { notes, getnotes, editnote } = context1;
-    const { getuser } = context2;
+    const { user, getuser } = context2;
     let navigate = useNavigate();
     useEffect(() => {
         if (sessionStorage.getItem('token')) {
@@ -81,7 +81,7 @@ function Notes() {
                     notes.map((note) => {
                         return (
                             <div className="col-md-3 mb-3 note-item-container" key={note._id}>
-                                <Noteitem updatenote={updatenote} note={note} />
+                                <Noteitem updatenote={updatenote} note={note} userId={user._id}/>
                             </div>
                         );
                     })
