@@ -129,7 +129,7 @@ router.delete('/deletenote/:id', fetchuser, async (req, res) => {
                 success: false
             });
         }
-        if (note.user.toString() !== req.user.id) {
+        if (note.user.toString() !== req.user.id || req.user.role !== 'admin') {
             return res.status(401).json({
                 message: "Not allowed for delete!",
                 success: false
