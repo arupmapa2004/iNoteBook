@@ -31,7 +31,6 @@ function NoteState(props) {
             console.log("Error on fetching all notes " + err);
         }
     }
-
     //add notes
     const addnote = async (title, description, tag) => {
         try {
