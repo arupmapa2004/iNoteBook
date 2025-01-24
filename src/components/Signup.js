@@ -23,10 +23,18 @@ function Signup(props) {
         const data = await response.json();
 
         if (data.success) {
-            props.toast.success(data.message);
+            props.Swal.fire({
+                title: "Success!",
+                text: `${data.message}`,
+                icon: "success"
+              });
             navigate("/signin");
         } else {
-            props.toast.error(data.message);
+            props.Swal.fire({
+                title: "Oops!",
+                text: `${data.message}`,
+                icon: "error"
+              });
         }
     };
 

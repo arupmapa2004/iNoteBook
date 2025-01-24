@@ -153,8 +153,8 @@ router.delete('/delete-user/:id', fetchuser, async (req, res) => {
             })
         }
 
-        await Note.deleteMany({ user: userid });
-        await User.findByIdAndDelete(userid);
+        await Note.deleteMany({ user: req.params.id });
+        await User.findByIdAndDelete(req.params.id);
 
         return res.status(200).json({
             message: "User deleted Successfully",
