@@ -3,11 +3,9 @@ import UserContext from "./userContext";
 
 function UserState(props)
 {
-    const [user, setUser] = useState('');
-    const [passwordMsg, setPasswordMsg] = useState('');
-    
-    const host = "http://localhost:5000";
-    //const host = "https://inotebook-lmva.onrender.com";
+    const [user, setUser] = useState(null);    
+    //const host = "http://localhost:5000";
+    const host = "https://inotebook-lmva.onrender.com";
 
     // login method
     const signin = async (email, password) =>{        
@@ -63,10 +61,18 @@ function UserState(props)
         const data = await response.json();
         if(data.success)
         {
-            props.toast.success(data.message);
+            props.Swal.fire({
+                title: "Success!",
+                text: `${data.message}`,
+                icon: "success"
+              });
         }
         else{
-            props.toast.error(data.message);
+             props.Swal.fire({
+                title: "Oops!",
+                text: `${data.message}`,
+                icon: "error"
+              });
         }
     }
     //forget password
@@ -82,10 +88,18 @@ function UserState(props)
       const data = await response.json();
       if(data.success)
       {
-          setPasswordMsg(data.message)
+          props.Swal.fire({
+            title: "Send!",
+            text: `${data.message}`,
+            icon: "success"
+          });
       }
       else{
-          setPasswordMsg(data.message);
+        props.Swal.fire({
+            title: "Oops!",
+            text: `${data.message}`,
+            icon: "error"
+          });
       }
     }
     // image upload
@@ -113,7 +127,7 @@ function UserState(props)
         }
     }
    return(
-    <UserContext.Provider value={{user,passwordMsg, signin, getuser, changepassword, forgetpassword, imageupload}}>
+    <UserContext.Provider value={{user, signin, getuser, changepassword, forgetpassword, imageupload}}>
         {props.children}
     </UserContext.Provider>
    )

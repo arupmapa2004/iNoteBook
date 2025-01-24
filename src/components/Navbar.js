@@ -36,7 +36,10 @@ function Navbar() {
                             <Link className="nav-link active" aria-current="page" to={userRole === "admin" ? "/admin-dashboard" : "/"}>Home</Link>
                         </li>
                         <li className="nav-item">
-                            <Link className="nav-link active" aria-current="page" to="/about">About</Link>
+                            <Link className="nav-link active" aria-current="page" to="/about">About Us</Link>
+                        </li>
+                        <li className="nav-item">
+                            <Link className="nav-link active" aria-current="page" to="/contactus">Contact Us</Link>
                         </li>
                     </ul>
                     {!sessionStorage.getItem('token') ? (

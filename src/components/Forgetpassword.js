@@ -7,7 +7,7 @@ function Forgetpassword(props) {
     const [response, setResponse] = useState('');
     const context = useContext(userContext);
     const location = useLocation();
-    const { passwordMsg, forgetpassword } = context;
+    const { forgetpassword } = context;
 
     useEffect(() => {
         setResponse("");
@@ -19,10 +19,6 @@ function Forgetpassword(props) {
     const handleForgetPassword = async(e) => {
         e.preventDefault();
         await forgetpassword(email.email);
-        if(passwordMsg)
-        {
-            setResponse(passwordMsg);
-        }
     }
     const onChange = (e) => {
         setEmail({ ...email, [e.target.name]: e.target.value });

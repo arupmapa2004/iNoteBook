@@ -4,14 +4,19 @@ const User = require('../models/User');
 const Note = require('../models/Notes');
 const router = express.Router();
 const { body, validationResult } = require('express-validator');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const nodemailer = require('nodemailer');
-const randomstring = require('randomstring');
-const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
 const fetchuser = require('../middleware/fetchuser');
+const nodemailer = require('nodemailer');
+
+// Configuring nodemailer with your SMTP settings
+const transporter = nodemailer.createTransport({
+    service: 'gmail', // false for TLS - as a boolean not string
+    host: 'smtp@gmail.com',
+    port: 587,
+    auth: {
+        user: 'inotebookinfo@gmail.com',
+        pass: 'minl xrwx jzvp zoid'
+    }
+});
 
 router.get('/get-all-users', fetchuser, async (req, res) => {
     const userId = req.user.id;
@@ -160,6 +165,70 @@ router.delete('/delete-user/:id', fetchuser, async (req, res) => {
         console.error("Error on deleting user and notes: " + error);
         return res.status(500).json({
             message: "500 Internal server error",
+            success: false
+        })
+    }
+})
+router.post('/contact-us', [
+    body('name', 'Name should be at least 3 characters').isLength({ min: 3 }),
+    body('email', 'Enter a valid email').isEmail(),
+    body('contactno', 'Contact number must be 10 digits').isLength({ min: 10, max: 10 }).isNumeric(),
+    body('description', 'Description must be at least 10 characters').isLength({ min: 10 }),
+], async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        console.log(errors.array())
+        return res.status(400).json({
+            message: errors.array()[0].msg,
+            success: false
+        });
+    }
+    try {
+        
+        const admins = await User.find({role: 'admin'});
+        if(!admins)
+        {
+            return res.status(408).json({
+                message:"No admin founded",
+                success: false
+            })
+        }
+        const adminEmails = admins.map(admins => admins.email).join(',');
+        const mailOptions = {
+            from: '"iNoteBook" <inotebookinfo@gmail.com>',
+            to: adminEmails,
+            subject: 'Need Your Help',
+            html: `<p>Dear Admin,</p>
+            </br>
+            <p>Greetings from iNoteBook!</p>
+            <p>We have received a contact request from <strong>${req.body.name}</strong>. Please solve his/her problem as soon as possible.</p>
+            <p>Email Adress: ${req.body.email}</p>
+            <p>Contact Number: ${req.body.contactno}</p>
+            <p>Description: ${req.body.description}</p>
+            <b style="color: red;">This is an auto-generated email, please do not reply!</b>
+            <p>Regards</p>
+            <p>Team iNoteBook</p>
+            `
+        };
+
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.log('Error sending email:', error);
+                return res.status(500).json({
+                    message: 'Failed to send Your Request. Please try again later.',
+                    success: false
+                });
+            } else {
+                return res.status(200).json({
+                    message: 'Your Request Submitted! We will contact you soon.',
+                    success: true
+                });
+            }
+        });
+    } catch (error) {
+        console.error("Error on contact with us: " + error);
+        return res.status(504).json({
+            message: "504 Internal server error",
             success: false
         })
     }

@@ -108,7 +108,7 @@ router.post('/signup', [
 
 //ROUTE 3 : for user login -- (/api/signin)
 router.post('/signin', [
-    body('email','Email can not Empty').isEmail(),
+    body('email', 'Email can not Empty').isEmail(),
     body('password', 'Password can not Empty').exists(),
 ], async (req, res) => {
     const errors = validationResult(req);
@@ -118,19 +118,19 @@ router.post('/signin', [
             message: errors.array()[0].msg
         });
     }
-    
+
     const { email, password } = req.body;
 
     try {
         const user = await User.findOne({ email: email });
-        
+
         if (!user) {
             return res.status(400).json({
                 message: "User Not Found!",
                 success: false
             })
         }
-    
+
         const passwordCheck = await bcrypt.compare(password, user.password);
         if (!passwordCheck) {
             return res.status(400).send({
@@ -138,7 +138,7 @@ router.post('/signin', [
                 success: false
             });
         }
-        
+
         const userToken = {
             user: {
                 id: user.id,
@@ -165,7 +165,7 @@ router.post('/signin', [
 
 //ROUTE 4 : for changing user password -- (/api/changepassword)
 router.put('/changepassword', fetchuser, [
-    body('oldPass','Old Password can not Empty').isLength({ min: 1 }),
+    body('oldPass', 'Old Password can not Empty').isLength({ min: 1 }),
     body('newPass', 'New Password can not Empty').isLength({ min: 1 }),
     body('cnfPass', 'Confirm Password can not Empty').isLength({ min: 1 }),
 ], async (req, res) => {

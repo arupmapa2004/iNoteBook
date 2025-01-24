@@ -15,7 +15,6 @@ function Changepassword() {
     }
     const onResetClick = (e) => {
         e.preventDefault();
-        console.log("click");
         setPassword({ oldPass: "", newPass: "", cnfPass: "" });
     }
     return (

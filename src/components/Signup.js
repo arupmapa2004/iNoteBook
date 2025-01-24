@@ -7,8 +7,8 @@ function Signup(props) {
     });
 
     let navigate = useNavigate();
-    const host = "http://localhost:5000";
-    //const host = "https://inotebook-lmva.onrender.com";
+    //const host = "http://localhost:5000";
+    const host = "https://inotebook-lmva.onrender.com";
 
     const handleSubmit = async (e) => {
         e.preventDefault();

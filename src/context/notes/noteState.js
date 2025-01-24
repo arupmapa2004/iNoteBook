@@ -3,8 +3,8 @@ import { jsPDF } from 'jspdf';
 import NoteContext from './noteContext';
 
 function NoteState(props) {
-    const host = "http://localhost:5000";
-    //const host = "https://inotebook-lmva.onrender.com";
+    //const host = "http://localhost:5000";
+    const host = "https://inotebook-lmva.onrender.com";
     const [notes, setNotes] = useState([]);
 
     // get all notes
@@ -172,29 +172,49 @@ function NoteState(props) {
         }
     }
     //delete note
-    const deletenote = async (id) => {
-        try {
-            const response = await fetch(`${host}/api/notes/deletenote/${id}`, {
-                method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json",
-                    "auth-token": sessionStorage.getItem('token')
-                }
-            });
+    const deletenote = (id) => {
+        props.Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!"
+        }).then( async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    const response = await fetch(`${host}/api/notes/deletenote/${id}`, {
+                        method: "DELETE",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "auth-token": sessionStorage.getItem('token')
+                        }
+                    });
 
-            const data = await response.json();
-            if (data.success) {
-                const newNote = notes.filter((note) => { return note._id !== id });
-                setNotes(newNote);
-                props.toast.success(data.message);
+                    const data = await response.json();
+                    if (data.success) {
+                        const newNote = notes.filter((note) => { return note._id !== id });
+                        setNotes(newNote);
+                        props.Swal.fire({
+                            title: "Deleted!",
+                            text: `${data.message}`,
+                            icon: "success"
+                        });
+                    }
+                    else {
+                        props.Swal.fire({
+                            title: "Oops!",
+                            text: `${data.message}`,
+                            icon: "error"
+                        });
+                    }
+                }
+                catch (err) {
+                    console.log("Error on deleting notes" + err);
+                }
             }
-            else {
-                props.toast.error(data.message);
-            }
-        }
-        catch (err) {
-            console.log("Error on deleting notes" + err);
-        }
+        });
     }
     return (
         <NoteContext.Provider value={{ notes, getnotes, addnote, editnote, downloadnote, deletenote }}>

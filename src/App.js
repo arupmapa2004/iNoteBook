@@ -16,13 +16,15 @@ import Forgetpassword from "./components/Forgetpassword";
 import Pagenotfound from "./components/Pagenotfound";
 import Allusers from "./components/Allusers";
 import Userdetails from "./components/Userdetails";
+import Contactus from "./components/Contactus";
+import Swal from "sweetalert2";
 
 function App() {
   return (
     <>
-      <AdminState toast={toast}>
-        <UserState toast={toast}>
-          <NoteState toast={toast}>
+      <AdminState toast={toast} Swal={Swal}>
+        <UserState toast={toast} Swal={Swal}>
+          <NoteState toast={toast} Swal={Swal}>
             <BrowserRouter>
               <Navbar />
               <ToastContainer
@@ -38,16 +40,17 @@ function App() {
                 theme="light" />
               <div className="container my-3">
                 <Routes>
-                  <Route exact path="/" element={<Home toast={toast} />} />
-                  <Route exact path="/admin-dashboard" element={<AdminHome />} />
-                  <Route exact path="/about" element={<About toast={toast} />} />
-                  <Route exact path="/signin" element={<Signin toast={toast} />} />
+                  <Route exact path="/" element={<Home toast={toast} Swal={Swal} />} />
+                  <Route exact path="/admin-dashboard" element={<AdminHome Swal={Swal}/>} />
+                  <Route exact path="/about" element={<About toast={toast} Swal={Swal} />} />
+                  <Route exact path="/contactus" element={<Contactus toast={toast} Swal={Swal} />} />
+                  <Route exact path="/signin" element={<Signin toast={toast} Swal={Swal} />} />
                   <Route exact path="/forgetpassword" element={<Forgetpassword />} />
-                  <Route exact path="/signup" element={<Signup toast={toast} />} />
-                  <Route exact path="/userprofile" element={<Userprofile toast={toast} />} />
-                  <Route exact path="/changepassword" element={<Changepassword toast={toast} />} />
-                  <Route exact path="/allusers" element={<Allusers toast={toast} />} />
-                  <Route exact path="/allusers/userdetails" element={<Userdetails toast={toast} />} />
+                  <Route exact path="/signup" element={<Signup toast={toast} Swal={Swal} />} />
+                  <Route exact path="/userprofile" element={<Userprofile toast={toast} Swal={Swal} />} />
+                  <Route exact path="/changepassword" element={<Changepassword toast={toast} Swal={Swal} />} />
+                  <Route exact path="/allusers" element={<Allusers toast={toast} Swal={Swal} />} />
+                  <Route exact path="/allusers/userdetails" element={<Userdetails toast={toast} Swal={Swal} />} />
                   <Route exact path="*" element={<Pagenotfound />} />
                 </Routes>
               </div>
