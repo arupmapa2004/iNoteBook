@@ -129,8 +129,7 @@ router.delete('/deletenote/:id', fetchuser, async (req, res) => {
                 success: false
             });
         }
-        console.log(req.user);
-        if ( req.user.role !== 'admin' || note.user.toString() !== req.user.id) {
+        if ( req.user.role !== 'admin' && note.user.toString() !== req.user.id) {
             return res.status(401).json({
                 message: "Not allowed for delete!",
                 success: false
