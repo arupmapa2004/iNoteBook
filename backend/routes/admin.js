@@ -202,13 +202,11 @@ router.post('/contact-us', [
             </br>
             <p>Greetings from iNoteBook!</p>
             <p>We have received a contact request from <strong>${req.body.name}</strong>. Please solve his/her problem as soon as possible.</p>
-            <p>Email Adress: ${req.body.email}</p>
+            <p>Email Address: ${req.body.email}</p>
             <p>Contact Number: ${req.body.contactno}</p>
             <p>Description: ${req.body.description}</p>
-            <b style="color: red;">This is an auto-generated email, please do not reply!</b>
-            <p>Regards</p>
-            <p>Team iNoteBook</p>
-            `
+            <p style="color: red; font-weight: bold;">This is an auto-generated email, please do not reply!</p>
+            <p>Regards,<br>Team iNoteBook</p>`
         };
 
         transporter.sendMail(mailOptions, (error, info) => {

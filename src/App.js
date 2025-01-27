@@ -22,9 +22,10 @@ import Swal from "sweetalert2";
 function App() {
   return (
     <>
-      <AdminState toast={toast} Swal={Swal}>
         <UserState toast={toast} Swal={Swal}>
           <NoteState toast={toast} Swal={Swal}>
+      <AdminState toast={toast} Swal={Swal}>
+
             <BrowserRouter>
               <Navbar />
               <ToastContainer
@@ -55,9 +56,9 @@ function App() {
                 </Routes>
               </div>
             </BrowserRouter>
+            </AdminState>
           </NoteState>
         </UserState>
-      </AdminState>
     </>
   );
 }

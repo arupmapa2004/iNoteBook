@@ -16,7 +16,6 @@ function Userdetails() {
     const [mode, setMode] = useState("hide");
     const [userRole, setUserRole] = useState(user.role);
 
-
     const formateDate = (d) => {
         const dateString = d;
         const date = new Date(dateString);
@@ -33,7 +32,7 @@ function Userdetails() {
 
     useEffect(() => {
         getUserNotes(user._id);
-    }, [user._id]);
+    }, [getUserNotes, user]);
 
     useEffect(() => {
         if (user?.date) {

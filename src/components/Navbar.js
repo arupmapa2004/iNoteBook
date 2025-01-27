@@ -55,7 +55,7 @@ function Navbar() {
                                     Settings
                                 </button>
                                 <ul className="dropdown-menu">
-                                    {user.role === "admin" ? (
+                                    {userRole === "admin" ? (
                                         <>
                                             <li><Link className="dropdown-item" to="/userprofile">Profile</Link></li>
                                             <li><Link className="dropdown-item" to="/changepassword">Change Password</Link></li>

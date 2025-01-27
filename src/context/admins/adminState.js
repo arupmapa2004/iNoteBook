@@ -80,28 +80,63 @@ function AdminState(props) {
      }
     // delete One user
     const deleteUser = async (id) => {
-        try {
-            const response = await fetch(`${host}/api/admin/delete-user/${id}`, {
-                method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json",
-                    "auth-token": sessionStorage.getItem("token")
+        const swalWithBootstrapButtons = props.Swal.mixin({
+            customClass: {
+              confirmButton: "btn btn-success mx-2",
+              cancelButton: "btn btn-danger mx-2"
+            },
+            buttonsStyling: false
+          });
+          swalWithBootstrapButtons.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Yes, delete it!",
+            cancelButtonText: "No, cancel!",
+            reverseButtons: true
+          }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    const response = await fetch(`${host}/api/admin/delete-user/${id}`, {
+                        method: "DELETE",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "auth-token": sessionStorage.getItem("token")
+                        }
+                    })
+                    const data = await response.json();
+        
+                    if (data.success) {
+                        const newUsers = users.filter((user)=>user._id !== id);
+                        setUsers(newUsers);
+                        swalWithBootstrapButtons.fire({
+                            title: "Deleted!",
+                            text: `${data.message}`,
+                            icon: "success"
+                          });
+                    }
+                    else{
+                        swalWithBootstrapButtons.fire({
+                            title: "Oops!",
+                            text: `${data.message}`,
+                            icon: "error"
+                          });
+                    }
+                } catch (error) {
+                    console.error("Error on delete user: " + error);
                 }
-            })
-            const data = await response.json();
-
-            if (data.success) {
-                const newUsers = users.filter((user)=>user._id !== id);
-                setUsers(newUsers);
-                toast.success(data.message);
+            } else if (
+              /* Read more about handling dismissals below */
+              result.dismiss === props.Swal.DismissReason.cancel
+            ) {
+              swalWithBootstrapButtons.fire({
+                title: "Cancelled",
+                text: "Your user is safe :)",
+                icon: "error"
+              });
             }
-            else {
-                toast.error(data.message);
-            }
-
-        } catch (error) {
-            console.error("Error on delete user: " + error);
-        }
+          });
     }
     return (
         <adminContext.Provider value={{ users, userNotes, getAllUsers, getUserNotes, makeAdminOrNot, deleteUser }}>

@@ -92,10 +92,39 @@ router.post('/signup', [
         const authToken = jwt.sign(data, process.env.SECRET);
 
         success = true;
-        res.status(200).json({
-            message: "Registration successfully completed!",
-            success: success,
-            authToken: authToken
+        const mailOptions = {
+            from: '"iNoteBook" <inotebookinfo@gmail.com>',
+            to: req.body.email,
+            subject: 'Welcome to iNotebook!',
+            html: `<p>Dear ${req.body.name},</p>
+            </br>
+            <p>Greetings from iNoteBook!🎉</p>
+            <p>We're thrilled to have you on board. With iNotebook, you can stay organized, jot down ideas, and manage your notes seamlessly.</p>
+            <ul>
+             ✨ What’s next?
+             <br>
+              <li>Explore the intuitive interface.</li>
+              <li>Create your first notebook or note.</li>
+              <li>Enjoy a distraction-free, cloud-backed experience.</li>
+            </ul>
+            <b style="color: red;">Need help? Reach out anytime—we're here to make sure you get the most out of iNotebook!
+               Let’s make note-taking effortless. 🚀</b>
+            <p>Regards,<br>Team iNoteBook</p>`
+        };
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.log('Error sending email:', error);
+                return res.status(500).json({
+                    message: 'Somthing went wrong. Please try again later.',
+                    success: false
+                });
+            } else {
+                return res.status(200).json({
+                    message: "Registration successfully completed!",
+                    success: success,
+                    authToken: authToken
+                });
+            }
         });
     } catch (error) {
         console.error("Error on signup: ", error);
@@ -256,9 +285,7 @@ router.put('/forgetpassword', async (req, res) => {
             <p>We want to let you know that your password has been reset.</p>
             <p>New password is: <strong>${newpass}</strong></p>
             <b style="color: red;">This is an auto generate email, please do not reply and do not share your password!</b>
-            <p>Regards</p>
-            <p>Team iNoteBook</p>
-            `
+            <p>Regards,<br>Team iNoteBook</p>`
         };
 
         const salt = await bcrypt.genSalt(10);
