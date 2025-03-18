@@ -254,15 +254,8 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-// Generate OTP function
-function generatePassword() {
-    return randomstring.generate({
-        length: 7
-    });
-}
-
 //ROUTE 5 : for fogetpassword -- (/api/fogetpassword)
-router.put('/forgetpassword', async (req, res) => {
+router.post('/forgetpassword', async (req, res) => {
     try {
         const email = req.body.email;
         const user = await User.findOne({ email: email });
@@ -272,42 +265,37 @@ router.put('/forgetpassword', async (req, res) => {
                 success: false
             })
         }
-        const newpass = generatePassword();
+        const token = jwt.sign({email}, process.env.SECRET, {expiresIn:'30m'});
 
         // Compose email
         const mailOptions = {
             from: '"iNoteBook" <inotebookinfo@gmail.com>',
             to: email,
-            subject: 'Password Reset',
+            subject: 'Password Reset Request',
             html: `<p>Dear ${user.name},</p>
             </br>
             <p>Greetings from iNoteBook!</p>
-            <p>We want to let you know that your password has been reset.</p>
-            <p>New password is: <strong>${newpass}</strong></p>
+            <p>Please click on this link to reset your password:https://inotebook-theta-ten.vercel.app/reset-password/?token=${token}</p>
+            <strong>This link is valid upto 30 minutes after that you can't use this link to reset your password!</strong>
+            <br>
             <b style="color: red;">This is an auto generate email, please do not reply and do not share your password!</b>
             <p>Regards,<br>Team iNoteBook</p>`
         };
 
-        const salt = await bcrypt.genSalt(10);
-        const newpassword = await bcrypt.hash(newpass, salt);
-        const isUpdate = await User.findByIdAndUpdate(user._id, { password: newpassword }, { new: true });
-
-        if (isUpdate) {
-            transporter.sendMail(mailOptions, (error, info) => {
-                if (error) {
-                    console.log('Error sending email:', error);
-                    return res.status(500).json({
-                        message: 'Failed to send OTP. Please try again later.',
-                        success: false
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.log('Error sending email:', error);
+                return res.status(500).json({
+                       message: 'Failed to send Email. Please try again later.',
+                       success: false
                     });
-                } else {
-                    return res.status(200).json({
-                        message: 'New password sent to email successfully. Please check your inbox.',
-                        success: true
+            } else {
+                return res.status(200).json({
+                       message: 'New password reset link sent to email successfully. Please check your inbox.',
+                       success: true
                     });
                 }
-            });
-        }
+        });
     }
     catch (err) {
         console.log("Can't handle forget password: " + err);
@@ -318,6 +306,48 @@ router.put('/forgetpassword', async (req, res) => {
     }
 })
 
+//Route 6: for reset password -- (/api/reset-password)
+router.put('/reset-password/:token', [
+    body('newPass', 'New Password can not Empty').isLength({ min: 1 }),
+    body('cnfPass', 'Confirm Password can not Empty').isLength({ min: 1 }),
+],async (req,res) =>{
+    try {
+        const error = validationResult(req);
+        if (!error.isEmpty()) {
+            return res.status(400).json({ message: error.array()[0].msg });
+        }
+        const {token} = req.params;
+        const {newPass, cnfPass} = req.body;
+        if (newPass !== cnfPass) {
+            return res.status(401).json({
+                message: "Confrim password not match!",
+                success: false
+            })
+        }
+        const decode = await jwt.verify(token, process.env.SECRET);
+
+        const user = await User.findOne({email: decode.email});
+        if (!user) {
+            return res.status(400).json({
+                message: "User not found!",
+                success: false
+            })
+        }
+        const salt = await bcrypt.genSalt(10);
+        const newpass = await bcrypt.hash(newPass, salt);
+        await User.findByIdAndUpdate(user._id, { password: newpass }, { new: true });
+        return res.status(200).json({
+            message: "Password Changed Successfully",
+            success: true
+        })
+    } catch (error) {
+        console.log("Can't handle reset password: " + error);
+        return res.status(500).json({
+            message: "Internal Server Error",
+            success: false
+        });
+    }
+})
 // multer file storage
 const storage = multer.diskStorage({
     destination: "./public/images",
@@ -339,7 +369,7 @@ const upload = multer({
     }
 })
 
-//ROUTE 6 : for uploading user image -- (/api/imageupload)
+//ROUTE 7 : for uploading user image -- (/api/imageupload)
 router.put('/imageupload', fetchuser, upload.single('image'), async (req, res) => {
     try {
         const userId = req.user.id;

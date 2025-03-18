@@ -18,6 +18,7 @@ import Allusers from "./components/Allusers";
 import Userdetails from "./components/Userdetails";
 import Contactus from "./components/Contactus";
 import Swal from "sweetalert2";
+import Resetpassword from "./components/Resetpassword";
 
 function App() {
   return (
@@ -47,6 +48,7 @@ function App() {
                   <Route exact path="/contactus" element={<Contactus toast={toast} Swal={Swal} />} />
                   <Route exact path="/signin" element={<Signin toast={toast} Swal={Swal} />} />
                   <Route exact path="/forgetpassword" element={<Forgetpassword />} />
+                  <Route exact path="/reset-password" element={<Resetpassword/>} />
                   <Route exact path="/signup" element={<Signup toast={toast} Swal={Swal} />} />
                   <Route exact path="/userprofile" element={<Userprofile toast={toast} Swal={Swal} />} />
                   <Route exact path="/changepassword" element={<Changepassword toast={toast} Swal={Swal} />} />

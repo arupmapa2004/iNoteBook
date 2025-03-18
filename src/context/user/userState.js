@@ -1,14 +1,15 @@
 import React, { useState } from "react";
 import UserContext from "./userContext";
 
-function UserState(props)
-{
-    const [user, setUser] = useState(null);    
+function UserState(props) {
+    const [user, setUser] = useState(null);
+
+
     //const host = "http://localhost:5000";
     const host = "https://inotebook-lmva.onrender.com";
 
     // login method
-    const signin = async (email, password) =>{        
+    const signin = async (email, password) => {
         const response = await fetch(`${host}/api/auth/signin`, {
             method: "POST",
             headers: {
@@ -48,65 +49,89 @@ function UserState(props)
         }
     }
     //change password
-    const changepassword = async (oldpassword,newpassword,cnfpassword)=>{
-        const response = await fetch(`${host}/api/auth/changepassword`,{
-              method:"PUT",
-              headers:{
-                "Content-Type":"application/json",
-                "auth-token":sessionStorage.getItem('token')
-              },
-              body: JSON.stringify({oldPass:oldpassword,newPass:newpassword,cnfPass:cnfpassword})
+    const changepassword = async (oldpassword, newpassword, cnfpassword) => {
+        const response = await fetch(`${host}/api/auth/changepassword`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "auth-token": sessionStorage.getItem('token')
+            },
+            body: JSON.stringify({ oldPass: oldpassword, newPass: newpassword, cnfPass: cnfpassword })
         })
 
         const data = await response.json();
-        if(data.success)
-        {
+        if (data.success) {
             props.Swal.fire({
                 title: "Success!",
                 text: `${data.message}`,
                 icon: "success"
-              });
+            });
         }
-        else{
-             props.Swal.fire({
+        else {
+            props.Swal.fire({
                 title: "Oops!",
                 text: `${data.message}`,
                 icon: "error"
-              });
+            });
         }
     }
     //forget password
-    const forgetpassword = async (email)=>{
-        const response = await fetch(`${host}/api/auth/forgetpassword`,{
-            method:"PUT",
-            headers:{
-              "Content-Type":"application/json"
+    const forgetpassword = async (email) => {
+        const response = await fetch(`${host}/api/auth/forgetpassword`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
             },
-            body: JSON.stringify({email:email})
-      })
+            body: JSON.stringify({ email: email })
+        })
 
-      const data = await response.json();
-      if(data.success)
-      {
-          props.Swal.fire({
-            title: "Send!",
-            text: `${data.message}`,
-            icon: "success"
-          });
-      }
-      else{
-        props.Swal.fire({
-            title: "Oops!",
-            text: `${data.message}`,
-            icon: "error"
-          });
-      }
+        const data = await response.json();
+        if (data.success) {
+            props.Swal.fire({
+                title: "Send!",
+                text: `${data.message}`,
+                icon: "success"
+            });
+        }
+        else {
+            props.Swal.fire({
+                title: "Oops!",
+                text: `${data.message}`,
+                icon: "error"
+            });
+        }
+    }
+    const resetpassword = async (newPass, cnfPass, token) => {
+        const response = await fetch(`${host}/api/auth/reset-password/${token}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ newPass: newPass, cnfPass: cnfPass })
+        })
+        const data = await response.json();
+        if (data.success) {
+            props.Swal.fire({
+                title: "Success!",
+                text: `${data.message}`,
+                icon: "success"
+            }).then(()=>{
+                window.location.href = '/';
+            });
+        }
+        else {
+            props.Swal.fire({
+                title: "Oops!",
+                text: `${data.message}`,
+                icon: "error"
+            });
+        }
     }
     // image upload
-    const imageupload = async (imageurl) =>{
+    const imageupload = async (imageurl) => {
         try {
             const formData = new FormData();
-        formData.append('image', imageurl);
+            formData.append('image', imageurl);
             const response = await fetch(`${host}/api/auth/imageupload`, {
                 method: "PUT",
                 headers: {
@@ -126,11 +151,11 @@ function UserState(props)
             console.error("Error on uploading image: " + err);
         }
     }
-   return(
-    <UserContext.Provider value={{user, signin, getuser, changepassword, forgetpassword, imageupload}}>
-        {props.children}
-    </UserContext.Provider>
-   )
+    return (
+        <UserContext.Provider value={{ user, signin, getuser, changepassword, forgetpassword, resetpassword, imageupload }}>
+            {props.children}
+        </UserContext.Provider>
+    )
 }
 
 export default UserState;
