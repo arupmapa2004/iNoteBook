@@ -324,7 +324,15 @@ router.put('/reset-password/:token', [
                 success: false
             })
         }
-        const decode = await jwt.verify(token, process.env.SECRET);
+        let decode;
+        try {
+            decode = await jwt.verify(token, process.env.SECRET)
+        } catch (error) {
+            return res.status(401).json({
+                message: "Invalid or expired url!",
+                success: false
+            })
+        }
 
         const user = await User.findOne({email: decode.email});
         if (!user) {
