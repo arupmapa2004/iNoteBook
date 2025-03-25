@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Loader from './Loader';
 
 function Signup(props) {
+    const [loading, setLoading] = useState(false);
     const [credentials, setCredentials] = useState({
         name: "", email: "", password: "", contactno: "", dob: "", gender: "", city: "", state: ""
     });
@@ -12,7 +14,7 @@ function Signup(props) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+        setLoading(true);
         const response = await fetch(`${host}/api/auth/signup`, {
             method: "POST",
             headers: {
@@ -21,20 +23,20 @@ function Signup(props) {
             body: JSON.stringify(credentials)
         });
         const data = await response.json();
-
+        setLoading(false);
         if (data.success) {
             props.Swal.fire({
                 title: "Success!",
                 text: `${data.message}`,
                 icon: "success"
-              });
+            });
             navigate("/signin");
         } else {
             props.Swal.fire({
                 title: "Oops!",
                 text: `${data.message}`,
                 icon: "error"
-              });
+            });
         }
     };
 
@@ -43,6 +45,8 @@ function Signup(props) {
     };
 
     return (
+        <>
+        {loading ? <Loader/> : null}
         <div className="d-flex justify-content-center align-items-center" style={{ minHeight: "100vh", paddingTop: "70px", background: "linear-gradient(to right, #e3f2fd, #bbdefb)" }}>
             <div className="card p-4 shadow-lg" style={{ width: "550px", borderRadius: "12px", backgroundColor: "rgba(255, 255, 255, 0.95)" }}>
                 <h2 className="text-center mb-3" style={{ color: "#0d6efd" }}>Join iNoteBook</h2>
@@ -99,6 +103,7 @@ function Signup(props) {
                 </form>
             </div>
         </div>
+        </>
     );
 }
 

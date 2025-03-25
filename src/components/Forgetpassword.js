@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useContext } from "react";
 import userContext from "../context/user/userContext";
 import { useLocation } from "react-router-dom";
+import Loader from "./Loader";
 
 function Forgetpassword(props) {
+    const [loading, setLoading] = useState(false);
     const [email, setEmail] = useState({ email: "" });
     const [response, setResponse] = useState('');
     const context = useContext(userContext);
@@ -18,13 +20,16 @@ function Forgetpassword(props) {
 
     const handleForgetPassword = async(e) => {
         e.preventDefault();
+        setLoading(true);
         await forgetpassword(email.email);
+        setLoading(false);
     }
     const onChange = (e) => {
         setEmail({ ...email, [e.target.name]: e.target.value });
     }
     return (
         <>
+        {loading ? <Loader/> : null}
              <div className="forget-password-container mt-5">
                 <h1>Reset Your Password</h1>
                 <p>

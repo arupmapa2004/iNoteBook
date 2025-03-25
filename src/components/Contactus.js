@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./Contactus.css"; // Separate CSS file for heavy styles
+import Loader from "./Loader";
 
 function Contactus(props) {
     //const host = "http://localhost:5000";
@@ -7,13 +8,14 @@ function Contactus(props) {
     const [credentials, setCredentials] = useState({
         name: "", email: "", contactno: "", description: ""
     });
-
+    const [loading, setLoading] = useState(false);
     const onChange = (e) => {
         setCredentials({ ...credentials, [e.target.name]: e.target.value });
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
         try {
             const response = await fetch(`${host}/api/admin/contact-us`, {
                 method: "POST",
@@ -23,6 +25,7 @@ function Contactus(props) {
                 body: JSON.stringify(credentials)
             });
             const data = await response.json();
+            setLoading(false);
             setCredentials({ name: "", email: "", contactno: "", description: "" });
             if (data.success) {
                 props.Swal.fire({
@@ -43,6 +46,8 @@ function Contactus(props) {
     };
 
     return (
+        <>
+        {loading ? <Loader/> : null}
         <div className="contactus-container">
             <div className="form-wrapper">
                 <h2 className="form-title">How can we assist you?</h2>
@@ -106,6 +111,7 @@ function Contactus(props) {
                 </form>
             </div>
         </div>
+        </>
     );
 }
 

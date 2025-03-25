@@ -1,8 +1,10 @@
 import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import userContext from '../context/user/userContext';
+import Loader from './Loader';
 
 function Signin(props) {
+    const [loading, setLoading] = useState(false);
     const [credentials, setCredentials] = useState({ email: "", password: "" });
     let navigate = useNavigate();
     const context = useContext(userContext);
@@ -10,9 +12,10 @@ function Signin(props) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
         await signin(credentials.email, credentials.password);
         const token = sessionStorage.getItem('token');
-
+        setLoading(false);
         if (token) {
             // Decode the token to extract payload
             const base64Payload = token.split('.')[1];
@@ -42,10 +45,13 @@ function Signin(props) {
     }
 
     return (
+        <>
+        {loading ? <Loader/> : null}
         <div className="d-flex justify-content-center align-items-center vh-100 bg-gradient-primary" style={{ background: "linear-gradient(to right, #e0f7fa, #b2ebf2)" }}>
             <div className="card p-4 shadow-lg" style={{ width: "400px", borderRadius: "12px", backgroundColor: "rgba(255, 255, 255, 0.95)" }}>
                 <h2 className="text-center mb-4" style={{ color: "#0d6efd" }}>Welcome Back</h2>
                 <h5 className="text-center text-muted mb-4">Access Your iNoteBook</h5>
+
                 <form onSubmit={handleSubmit}>
                     <div className="mb-3">
                         <label htmlFor="email" className="form-label fw-bold">Email Address</label>
@@ -78,6 +84,7 @@ function Signin(props) {
                 </form>
             </div>
         </div>
+        </>
     );
 }
 
