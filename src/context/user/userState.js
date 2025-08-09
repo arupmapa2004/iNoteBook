@@ -5,8 +5,8 @@ function UserState(props) {
     const [user, setUser] = useState(null);
 
 
-    //const host = "http://localhost:5000";
-    const host = "https://inotebook-lmva.onrender.com";
+    const host = "http://localhost:5000";
+    //const host = "https://inotebook-lmva.onrender.com";
 
     // login method
     const signin = async (email, password) => {
@@ -20,14 +20,19 @@ function UserState(props) {
         const data = await response.json();
         if (data.success) {
             sessionStorage.setItem('token', data.authToken);
+            await getuser();
             props.toast.success(data.message);
         }
         else {
             props.toast.error(data.message);
         }
     }
+
     // get user
     const getuser = async () => {
+
+        if(!sessionStorage.getItem('token')) return;
+
         try {
             const response = await fetch(`${host}/api/auth/getuser`, {
                 method: "GET",
@@ -48,6 +53,7 @@ function UserState(props) {
             console.error("Error on fetching user: " + err);
         }
     }
+
     //change password
     const changepassword = async (oldpassword, newpassword, cnfpassword) => {
         const response = await fetch(`${host}/api/auth/changepassword`, {
@@ -75,6 +81,7 @@ function UserState(props) {
             });
         }
     }
+
     //forget password
     const forgetpassword = async (email) => {
         const response = await fetch(`${host}/api/auth/forgetpassword`, {
@@ -101,6 +108,8 @@ function UserState(props) {
             });
         }
     }
+
+    // reset password
     const resetpassword = async (newPass, cnfPass, token) => {
         const response = await fetch(`${host}/api/auth/reset-password/${token}`, {
             method: "PUT",
@@ -127,11 +136,17 @@ function UserState(props) {
             });
         }
     }
+
     // image upload
-    const imageupload = async (imageurl) => {
+    const imageupload = async (file) => {
         try {
+            if (!file) {
+                console.error("No file provided for upload");
+                return;
+            }
             const formData = new FormData();
-            formData.append('image', imageurl);
+            formData.append('file', file); // Cloudinary expects "file"
+
             const response = await fetch(`${host}/api/auth/imageupload`, {
                 method: "PUT",
                 headers: {
@@ -139,18 +154,19 @@ function UserState(props) {
                 },
                 body: formData
             });
+
             const data = await response.json();
             if (data.success) {
-                props.toast.success(data.message)
+                props.toast.success(data.message);
+                await getuser(); // refresh user data after upload
+            } else {
+                props.toast.error(data.message);
             }
-            else {
-                props.toast.error(data.message)
-            }
+        } catch (err) {
+            console.error("Error uploading image:", err);
         }
-        catch (err) {
-            console.error("Error on uploading image: " + err);
-        }
-    }
+    };
+
     return (
         <UserContext.Provider value={{ user, signin, getuser, changepassword, forgetpassword, resetpassword, imageupload }}>
             {props.children}

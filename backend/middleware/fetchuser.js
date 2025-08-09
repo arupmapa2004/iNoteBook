@@ -1,7 +1,9 @@
 require("dotenv").config();
 const jwt = require('jsonwebtoken');
-const fetchuser = (req,res,next)=>{
+const fetchuser = async (req,res,next)=>{
     const token = req.header('auth-token');
+    //console.log(token);
+
     if(!token)
     {
         return res.status(400).send({
@@ -10,7 +12,7 @@ const fetchuser = (req,res,next)=>{
         });
     }
     try {
-        const data = jwt.verify(token,process.env.SECRET);
+        const data = await jwt.verify(token, process.env.SECRET);
         req.user = data.user;
         next();
 

@@ -10,13 +10,11 @@ function Userdetails() {
     const { userNotes, getUserNotes, makeAdminOrNot } = context;
     const [regFormatedDate, setRegFormatedDate] = useState("DD/MM/YYYY");
     const [dobFormatedDate, setDobFormatedDate] = useState("DD/MM/YYYY");
-    const [imagePath, setImagePath] = useState(
-        "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?size=338&ext=jpg&ga=GA1.1.2008272138.1726617600&semt=ais_hybrid"
-    );
+    const [imagePath, setImagePath] = useState(null);
     const [mode, setMode] = useState("hide");
     const [userRole, setUserRole] = useState(user.role);
 
-    const formateDate = (d) => {
+    const formatDate = (d) => {
         const dateString = d;
         const date = new Date(dateString);
         return date.toLocaleDateString("en-GB", {
@@ -34,19 +32,17 @@ function Userdetails() {
         getUserNotes(user._id);
     }, [getUserNotes, user]);
 
-    useEffect(() => {
-        if (user?.date) {
-            const formateReg = formateDate(user.date);
-            setRegFormatedDate(formateReg);
-        }
-        if (user?.dob) {
-            const formateDob = formateDate(user.dob);
-            setDobFormatedDate(formateDob);
-        }
-        if (user?.image && user.image !== "https://img.freepik.com/…") {
-            setImagePath(`https://inotebook-lmva.onrender.com/public/images/${user.image}`);
-        }
-    }, [user]);
+   useEffect(() => {
+           if (!user) return;
+   
+           if (user.date) setRegFormatedDate(formatDate(user.date));
+           if (user.dob) setDobFormatedDate(formatDate(user.dob));
+           console.log(user);
+           setImagePath(
+               user.image ||
+               "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg"
+           );
+       }, [user]);
 
     if (!user) {
         return <p>No user data available. Please navigate to this page from the All Users list.</p>;

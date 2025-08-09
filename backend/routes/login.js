@@ -6,11 +6,10 @@ const { body, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
-const randomstring = require('randomstring');
-const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
+const upload = require("../middleware/multer");
 const fetchuser = require('../middleware/fetchuser');
+const cloudinary = require("../config/cloudinary");
+const { Readable } = require('stream');
 
 //ROUTE 1 : for fetching user details -- (/api/getauser)
 router.get('/getuser', fetchuser, async (req, res) => {
@@ -175,8 +174,7 @@ router.post('/signin', [
                 role: user.role
             }
         }
-        const authToken = jwt.sign(userToken, process.env.SECRET);
-        success = true;
+        const authToken = await jwt.sign(userToken, process.env.SECRET);
 
         res.status(200).json({
             message: "Successfully Logged in!",
@@ -250,7 +248,7 @@ const transporter = nodemailer.createTransport({
     port: 587,
     auth: {
         user: 'inotebookinfo@gmail.com',
-        pass: 'minl xrwx jzvp zoid'
+        pass: 'cxdv nrxt wqvi dzat'
     }
 });
 
@@ -265,7 +263,7 @@ router.post('/forgetpassword', async (req, res) => {
                 success: false
             })
         }
-        const token = jwt.sign({email}, process.env.SECRET, {expiresIn:'30m'});
+        const token = await jwt.sign({ email }, process.env.SECRET, { expiresIn: '30m' });
 
         // Compose email
         const mailOptions = {
@@ -286,15 +284,15 @@ router.post('/forgetpassword', async (req, res) => {
             if (error) {
                 console.log('Error sending email:', error);
                 return res.status(500).json({
-                       message: 'Failed to send Email. Please try again later.',
-                       success: false
-                    });
+                    message: 'Failed to send Email. Please try again later.',
+                    success: false
+                });
             } else {
                 return res.status(200).json({
-                       message: 'New password reset link sent to email successfully. Please check your inbox.',
-                       success: true
-                    });
-                }
+                    message: 'New password reset link sent to email successfully. Please check your inbox.',
+                    success: true
+                });
+            }
         });
     }
     catch (err) {
@@ -310,14 +308,14 @@ router.post('/forgetpassword', async (req, res) => {
 router.put('/reset-password/:token', [
     body('newPass', 'New Password can not Empty').isLength({ min: 1 }),
     body('cnfPass', 'Confirm Password can not Empty').isLength({ min: 1 }),
-],async (req,res) =>{
+], async (req, res) => {
     try {
         const error = validationResult(req);
         if (!error.isEmpty()) {
             return res.status(400).json({ message: error.array()[0].msg });
         }
-        const {token} = req.params;
-        const {newPass, cnfPass} = req.body;
+        const { token } = req.params;
+        const { newPass, cnfPass } = req.body;
         if (newPass !== cnfPass) {
             return res.status(401).json({
                 message: "Confrim password not match!",
@@ -326,7 +324,8 @@ router.put('/reset-password/:token', [
         }
         let decode;
         try {
-            decode = await jwt.verify(token, process.env.SECRET)
+            decode = await jwt.verify(token, process.env.SECRET);
+            console.log(decode);
         } catch (error) {
             return res.status(401).json({
                 message: "Invalid or expired url!",
@@ -334,7 +333,7 @@ router.put('/reset-password/:token', [
             })
         }
 
-        const user = await User.findOne({email: decode.email});
+        const user = await User.findOne({ email: decode.email });
         if (!user) {
             return res.status(400).json({
                 message: "User not found!",
@@ -356,58 +355,51 @@ router.put('/reset-password/:token', [
         });
     }
 })
-// multer file storage
-const storage = multer.diskStorage({
-    destination: "./public/images",
-    filename: (req, file, cb) => {
-        cb(null, "image_" + Date.now() + path.extname(file.originalname));
-    }
-})
-// multer file checking
-const upload = multer({
-    storage: storage,
-    fileFilter: (req, file, cb) => {
-        const extName = path.extname(file.originalname);
-        if (extName.toLowerCase() === ".jpg" || extName.toLowerCase() === ".jpeg" || extName.toLowerCase() === ".png") {
-            cb(null, true);
-        }
-        else {
-            cb(new Error("Only .jpg or .jpeg format allowed!"));
-        }
-    }
-})
 
 //ROUTE 7 : for uploading user image -- (/api/imageupload)
-router.put('/imageupload', fetchuser, upload.single('image'), async (req, res) => {
-    try {
-        const userId = req.user.id;
-        const user = await User.findById(userId);
-        if (!user) {
-            return res.status(400).json({
-                message: "User not found!",
-                success: false
-            })
-        }
-        const imageurl = req.file ? req.file.filename : null;
-        if (!imageurl) {
-            return res.status(400).json({
-                message: "Only jpeg or jpg file allowed!",
-                success: false
-            });
-        }
-        await User.findByIdAndUpdate(user._id, { image: imageurl }, { new: true });
-        return res.status(200).json({
-            message: "Image Uploaded Successfully",
-            success: true
-        })
-
-    } catch (error) {
-        console.log("Can't upload image: " + error);
-        return res.status(500).json({
-            message: "505 Internal Server Error",
-            success: false
-        });
+router.put('/imageupload', fetchuser, upload.single('file'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ success: false, message: "No file uploaded" });
     }
-})
+
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    // Delete old image from Cloudinary if exists
+    if (user.image) {
+      const publicId = user.image.split('/').pop().split('.')[0];
+      await cloudinary.uploader.destroy(publicId);
+    }
+
+    // Upload new image from buffer
+    const result = await new Promise((resolve, reject) => {
+      const stream = cloudinary.uploader.upload_stream(
+        { folder: "user_images" },
+        (error, result) => {
+          if (error) reject(error);
+          else resolve(result);
+        }
+      );
+      stream.end(req.file.buffer);
+    });
+
+    // Save new image URL
+    user.image = result.secure_url;
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Image uploaded successfully",
+      imageUrl: result.secure_url
+    });
+
+  } catch (error) {
+    console.error("Unexpected Error:", error);
+    return res.status(500).json({ success: false, message: "Server error during image upload" });
+  }
+});
 
 module.exports = router;

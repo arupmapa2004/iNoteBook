@@ -20,10 +20,10 @@ function Resetpassword() {
     const onChange = (e) => {
         setPassword({ ...password, [e.target.name]: e.target.value });
     }
-    const onChangeClick = (e) => {
+    const onChangeClick = async(e) => {
         e.preventDefault();
         setLoading(true);
-        resetpassword(password.newPass, password.cnfPass, token);
+        await resetpassword(password.newPass, password.cnfPass, token);
         setPassword({ newPass: "", cnfPass: "" });
         setLoading(false);
     }
