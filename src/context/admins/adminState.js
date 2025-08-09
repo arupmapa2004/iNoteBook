@@ -4,8 +4,8 @@ import { toast } from "react-toastify";
 
 
 function AdminState(props) {
-    const host = "http://localhost:5000";
-    //const host = "https://inotebook-lmva.onrender.com";
+    //const host = "http://localhost:5000";
+    const host = "https://inotebook-lmva.onrender.com";
     const [users, setUsers] = useState([]);
     const [userNotes, setUserNotes] = useState([]);
 
