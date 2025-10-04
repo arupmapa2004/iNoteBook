@@ -55,6 +55,9 @@
   transform: translateY(-4px) scale(1.02);
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
 }
+.note-item{
+  background-color: rgb(241, 255, 242);
+}
 /* Forget Password Page Custom Styles */
 .forget-password-container {
   max-width: 600px;
@@ -150,5 +153,13 @@
 .custom-card:hover{
   transform: scale(1.02);
   border: 3px solid gray;
+}
+
+.modal-body {
+  word-wrap: break-word;      /* Old support */
+  overflow-wrap: break-word;  /* Modern support */
+  word-break: break-all;      /* Force break if needed */
+  max-height: 70vh;           /* Prevents modal from overflowing vertically */
+  overflow-y: auto;           /* Adds scroll if content is too long */
 }
 

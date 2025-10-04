@@ -6,12 +6,25 @@ import Loader from './Loader';
 function Signin(props) {
     const [loading, setLoading] = useState(false);
     const [credentials, setCredentials] = useState({ email: "", password: "" });
+    const [emailError, setEmailError] = useState({
+        isValid: false,
+        msg: "We'll never share your email with anyone else."
+    });
     let navigate = useNavigate();
     const context = useContext(userContext);
     const { signin } = context;
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i;
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (!emailPattern.test(credentials.email)) {
+            setEmailError({
+                isValid: false,
+                msg: "Please enter a valid email address"
+            });
+            return;
+        }
         setLoading(true);
         await signin(credentials.email, credentials.password);
         const token = sessionStorage.getItem('token');
@@ -24,11 +37,11 @@ function Signin(props) {
             const userRole = decodedPayload.user?.role; // Use optional chaining for safety
 
             setTimeout(() => {
-                if(userRole === "admin")
-                navigate("/admin-dashboard");
-               else{
-                navigate("/");
-               }
+                if (userRole === "admin")
+                    navigate("/admin-dashboard");
+                else {
+                    navigate("/");
+                }
             }, 1000);
         } else {
             navigate("/signin");
@@ -42,48 +55,73 @@ function Signin(props) {
 
     const onChange = (e) => {
         setCredentials({ ...credentials, [e.target.name]: e.target.value });
+
+        if (e.target.name === "email") {
+            const email = e.target.value;
+            if (email.length === 0) {
+                setEmailError({
+                    isValid: false,
+                    msg: "We'll never share your email with anyone else."
+                })
+            }
+            else if (emailPattern.test(e.target.value)) {
+                setEmailError({
+                    isValid: true,
+                    msg: "Email looks good!"
+                })
+            }
+            else {
+                setEmailError({
+                    isValid: false,
+                    msg: "Invalid email format!"
+                })
+            }
+        }
     }
 
     return (
         <>
-        {loading ? <Loader/> : null}
-        <div className="d-flex justify-content-center align-items-center vh-100 bg-gradient-primary" style={{ background: "linear-gradient(to right, #e0f7fa, #b2ebf2)" }}>
-            <div className="card p-4 shadow-lg" style={{ width: "400px", borderRadius: "12px", backgroundColor: "rgba(255, 255, 255, 0.95)" }}>
-                <h2 className="text-center mb-4" style={{ color: "#0d6efd" }}>Welcome Back</h2>
-                <h5 className="text-center text-muted mb-4">Access Your iNoteBook</h5>
+            {loading ? <Loader /> : null}
+            <div className="d-flex justify-content-center align-items-center vh-100 bg-gradient-primary" style={{ background: "linear-gradient(to right, #e0f7fa, #b2ebf2)" }}>
+                <div className="card p-4 shadow-lg" style={{ width: "400px", borderRadius: "12px", backgroundColor: "rgba(255, 255, 255, 0.95)" }}>
+                    <h2 className="text-center mb-4" style={{ color: "#0d6efd" }}>Welcome Back</h2>
+                    <h5 className="text-center text-muted mb-4">Access Your iNoteBook</h5>
 
-                <form onSubmit={handleSubmit}>
-                    <div className="mb-3">
-                        <label htmlFor="email" className="form-label fw-bold">Email Address</label>
-                        <input
-                            type="email"
-                            className="form-control"
-                            id="email"
-                            name="email"
-                            aria-describedby="emailHelp"
-                            onChange={onChange}
-                            required
-                        />
-                        <small id="emailHelp" className="form-text text-muted">We'll never share your email with anyone else.</small>
-                    </div>
-                    <div className="mb-3">
-                        <label htmlFor="password" className="form-label fw-bold">Password</label>
-                        <input
-                            type="password"
-                            className="form-control"
-                            id="password"
-                            name="password"
-                            onChange={onChange}
-                            required
-                        />
-                    </div>
-                    <button type="submit" className="btn btn-primary w-100 mb-3">Login</button>
-                    <button type="button" className="btn btn-link d-block text-center text-danger fw-bold" onClick={handleForgetPassword}>
-                        Forgot password?
-                    </button>
-                </form>
+                    <form onSubmit={handleSubmit}>
+                        <div className="mb-3">
+                            <label htmlFor="email" className="form-label fw-bold">Email Address</label>
+                            <input
+                                type="email"
+                                className="form-control"
+                                id="email"
+                                name="email"
+                                aria-describedby="emailHelp"
+                                onChange={onChange}
+                                required
+                            />
+                            {emailError && (
+                                <small style={{ color: emailError.isValid ? "green" : "red" }}>{emailError.msg}</small>
+                            )}
+                            {/*<small id="emailHelp" className="form-text text-muted">We'll never share your email with anyone else.</small>*/}
+                        </div>
+                        <div className="mb-3">
+                            <label htmlFor="password" className="form-label fw-bold">Password</label>
+                            <input
+                                type="password"
+                                className="form-control"
+                                id="password"
+                                name="password"
+                                onChange={onChange}
+                                required
+                            />
+                        </div>
+                        <button type="submit" className="btn btn-primary w-100 mb-3">Login</button>
+                        <button type="button" className="btn btn-link d-block text-center text-danger fw-bold" onClick={handleForgetPassword}>
+                            Forgot password?
+                        </button>
+                    </form>
+                </div>
             </div>
-        </div>
         </>
     );
 }

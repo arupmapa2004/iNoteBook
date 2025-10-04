@@ -139,7 +139,7 @@ function AdminState(props) {
           });
     }
     return (
-        <adminContext.Provider value={{ users, userNotes, getAllUsers, getUserNotes, makeAdminOrNot, deleteUser }}>
+        <adminContext.Provider value={{ users, userNotes, setUserNotes, getAllUsers, getUserNotes, makeAdminOrNot, deleteUser }}>
             {props.children}
         </adminContext.Provider>
     )

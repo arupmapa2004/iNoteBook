@@ -4,6 +4,10 @@ import Loader from './Loader';
 
 function Signup(props) {
     const [loading, setLoading] = useState(false);
+    const [emailError, setEmailError] = useState({
+        isValid:false,
+        msg:""
+    });
     const [credentials, setCredentials] = useState({
         name: "", email: "", password: "", contactno: "", dob: "", gender: "", city: "", state: ""
     });
@@ -11,9 +15,21 @@ function Signup(props) {
     let navigate = useNavigate();
     //const host = "http://localhost:5000";
     const host = "https://inotebook-lmva.onrender.com";
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i;
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        
+        if(!emailPattern.test(credentials.email))
+        {
+            setEmailError({
+                isValid: false,
+                msg: "Please enter a valid email address"
+            });
+            return;
+        }
+
         setLoading(true);
         const response = await fetch(`${host}/api/auth/signup`, {
             method: "POST",
@@ -42,6 +58,23 @@ function Signup(props) {
 
     const onChange = (e) => {
         setCredentials({ ...credentials, [e.target.name]: e.target.value });
+
+        if(e.target.name === "email")
+        {
+            if(emailPattern.test(e.target.value))
+            {
+                setEmailError({
+                    isValid: true,
+                    msg: "Email looks good!"
+                })
+            }
+            else{
+                setEmailError({
+                    isValid: false,
+                    msg: "Invalid email format!"
+                })
+            }
+        }
     };
 
     return (
@@ -59,6 +92,9 @@ function Signup(props) {
                     <div className="mb-3">
                         <label htmlFor="email" className="form-label fw-bold">Email Address</label>
                         <input type="email" className="form-control" id="email" name="email" onChange={onChange} value={credentials.email} required />
+                        {emailError && (
+                            <small style={{color: emailError.isValid ? "green" : "red"}}>{emailError.msg}</small>
+                        )}
                     </div>
                     <div className="mb-3">
                         <label htmlFor="password" className="form-label fw-bold">Password</label>

@@ -52,21 +52,18 @@ function Navbar() {
                             <h5 className="mx-1">Welcome, {userName}</h5>
                             <div className="dropdown mx-2">
                                 <button className="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Settings
+                                    Menu
                                 </button>
-                                <ul className="dropdown-menu">
-                                    {userRole === "admin" ? (
-                                        <>
-                                            <li><Link className="dropdown-item" to="/userprofile">Profile</Link></li>
-                                            <li><Link className="dropdown-item" to="/changepassword">Change Password</Link></li>
-                                            <li><Link className="dropdown-item" to="/allusers">Users</Link></li>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <li><Link className="dropdown-item" to="/userprofile">Profile</Link></li>
-                                            <li><Link className="dropdown-item" to="/changepassword">Change Password</Link></li>
-                                        </>
-                                    )}
+                                <ul className="dropdown-menu mt-1">
+                                    <>
+                                        <li><Link className="dropdown-item" style={{ '--bs-dropdown-link-hover-bg': 'skyblue' }} to="/userprofile">Profile</Link></li>
+                                        <li><Link className="dropdown-item" style={{ '--bs-dropdown-link-hover-bg': 'skyblue' }} to="/changepassword">Change Password</Link></li>
+                                        {userRole === "admin" ? (
+                                            <li><Link className="dropdown-item" style={{ '--bs-dropdown-link-hover-bg': 'skyblue' }} to="/allusers">Users</Link></li>
+                                        ) : (
+                                            <></>
+                                        )}
+                                    </>
                                 </ul>
                             </div>
                             <button type="button" className="btn btn-warning mx-1" onClick={handleLogout}>SignOut</button>

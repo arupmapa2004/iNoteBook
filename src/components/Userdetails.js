@@ -30,14 +30,13 @@ function Userdetails() {
 
     useEffect(() => {
         getUserNotes(user._id);
-    }, [getUserNotes, user]);
+    }, [user]);
 
    useEffect(() => {
            if (!user) return;
    
            if (user.date) setRegFormatedDate(formatDate(user.date));
            if (user.dob) setDobFormatedDate(formatDate(user.dob));
-           console.log(user);
            setImagePath(
                user.image ||
                "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg"
