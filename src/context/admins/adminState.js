@@ -54,6 +54,52 @@ function AdminState(props) {
             console.error("Error on getting user details: " + error);
         }
     }
+    // Delete users notes
+    const deleteUsersnote = (id) => {
+        props.Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!"
+        }).then( async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    const response = await fetch(`${host}/api/notes/deletenote/${id}`, {
+                        method: "DELETE",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "auth-token": sessionStorage.getItem('token')
+                        }
+                    });
+
+                    const data = await response.json();
+                    if (data.success) {
+                        const newNote = userNotes.filter((note) => { return note._id !== id });
+                        setUserNotes(newNote);
+      
+                        props.Swal.fire({
+                            title: "Users Note Deleted!",
+                            text: `${data.message}`,
+                            icon: "success"
+                        });
+                    }
+                    else {
+                        props.Swal.fire({
+                            title: "Oops!",
+                            text: `${data.message}`,
+                            icon: "error"
+                        });
+                    }
+                }
+                catch (err) {
+                    console.log("Error on deleting notes" + err);
+                }
+            }
+        });
+    }
     // Make Admin Or Not
      const makeAdminOrNot = async (userId) =>{
         try {
@@ -139,7 +185,7 @@ function AdminState(props) {
           });
     }
     return (
-        <adminContext.Provider value={{ users, userNotes, setUserNotes, getAllUsers, getUserNotes, makeAdminOrNot, deleteUser }}>
+        <adminContext.Provider value={{ users, userNotes, setUserNotes, getAllUsers, getUserNotes, deleteUsersnote, makeAdminOrNot, deleteUser }}>
             {props.children}
         </adminContext.Provider>
     )

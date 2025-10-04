@@ -4,12 +4,15 @@ import { faTrash, faPenToSquare, faDownload, faEye } from "@fortawesome/free-sol
 import '../App.css';
 import noteContext from "../context/notes/noteContext";
 import userContext from "../context/user/userContext";
+import adminContext from "../context/admins/adminContext";
 
 function Noteitem(props) {
-    const context = useContext(noteContext);
+    const context1 = useContext(noteContext);
     const context2 = useContext(userContext);
+    const context3 = useContext(adminContext);
+    const { deletenote, downloadnote } = context1;
     const { user, getuser } = context2;
-    const { deletenote, downloadnote } = context;
+    const { deleteUsersnote } = context3;
     const { note, updatenote, userId } = props;
 
     const [showModal, setShowModal] = useState(false);
@@ -59,7 +62,9 @@ function Noteitem(props) {
                         className="custom-icon me-3"
                         title="Download Note"
                         style={{ color: "#28a745", cursor: "pointer" }}
-                        onClick={async () => { await downloadnote(note._id); }}
+                        onClick={async () => {
+                            await downloadnote(note._id);
+                        }}
                     />
 
                     {/* Delete */}
@@ -68,7 +73,10 @@ function Noteitem(props) {
                         className="custom-icon"
                         title="Delete Note"
                         style={{ color: "#dc3545", cursor: "pointer" }}
-                        onClick={async () => { await deletenote(note._id); }}
+                        onClick={async () => {
+                            if (user?._id === userId) await deletenote(note._id);
+                            else await deleteUsersnote(note._id)
+                        }}
                     />
                 </div>
             </div>

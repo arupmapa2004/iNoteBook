@@ -80,8 +80,8 @@ function Notes() {
                 {notes.length !== 0 ? (
                     notes.map((note) => {
                         return (
-                            <div className="col-md-3 mb-3 note-item-container" key={note._id}>
-                                <Noteitem updatenote={updatenote} note={note} userId={user._id}/>
+                            <div className="col-md-3 mb-3 note-item-container" key={note?._id}>
+                                <Noteitem updatenote={updatenote} note={note} userId={user?._id}/>
                             </div>
                         );
                     })

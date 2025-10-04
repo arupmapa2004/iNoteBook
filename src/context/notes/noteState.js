@@ -195,6 +195,7 @@ function NoteState(props) {
                     if (data.success) {
                         const newNote = notes.filter((note) => { return note._id !== id });
                         setNotes(newNote);
+
                         props.Swal.fire({
                             title: "Deleted!",
                             text: `${data.message}`,
